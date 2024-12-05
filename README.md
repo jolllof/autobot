@@ -1,0 +1,2 @@
+# pythanos-bot
+trading bot
