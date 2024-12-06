@@ -1,0 +1,3 @@
+binance_creds:
+  api_key: "${binance_key}"
+  api_secret: "${binance_secret}"
