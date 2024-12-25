@@ -2,4 +2,4 @@
 trading bot
 
 Virtual Environment:
-pythanos_bot_env\Scripts\activate
+source pythanosbot_env/bin/activate

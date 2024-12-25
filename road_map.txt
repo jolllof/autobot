@@ -1,3 +1,48 @@
+
+Trend-Following Bot vs Mean Reversion Bot
+
+
+
+#Trend-Following Bot
+
+Why?
+Simple to implement using basic indicators like moving averages, RSI, or MACD.
+Doesn't require constant intervention.
+How It Works: The bot identifies trends in the market and takes positions accordingly. For example, buying when a short-term moving average crosses above a long-term one.
+Considerations:
+Works best in trending markets.
+Test and optimize with historical data to avoid false signals.
+
+Combine RSA and Moving Averages to compare stocks
+if RSA hit 70 in the past week and on the downward SELL, if it hit 30 in the past week and on the UPWARD buy
+
+
+#Mean Reversion Bot
+
+Why?
+Suitable for range-bound assets with a history of reverting to the mean.
+Easy to program using statistical measures (e.g., Bollinger Bands).
+How It Works: The bot buys when prices drop below a predefined range and sells when they return to the average.
+Considerations:
+Best for stable, non-volatile markets.
+Requires less frequent monitoring but regular strategy validation.
+
+
+
+APIS:
+yfinance for specific stock data
+finnhub for all stocks and their categories
+robinhood to keep track of my pre-existing investments in context to autobot
+
+
+
+
+
+
+
+
+
+
 Here is a list of files typically necessary for building and managing a Python trading bot:
 
 1. Main Bot File (e.g., main.py)

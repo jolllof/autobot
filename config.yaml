@@ -1,3 +1,28 @@
 binance_creds:
   api_key: "${binance_key}"
   api_secret: "${binance_secret}"
+
+tickers:
+  - AAPL
+  - AI
+  - AMD
+  - ARTY
+  - BBAI
+  - BOTZ
+  - DIS
+  - JMIA
+  - MDB
+  - MSFT
+  - NEUE
+  - NVDA
+  - PLTR
+  - PLUG
+  - QCOM
+  - RIOT
+  - SOUN
+  - TEAM
+  - TSLA
+  - UBER
+  - VGT
+  - WKHS
+  - IONQ
