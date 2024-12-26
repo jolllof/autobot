@@ -28,7 +28,7 @@ def calculate_rsi(data, window=14):
 
 # Plot stock data with indicators
 def plot_indicators(data, ticker):
-    plt.figure(figsize=(14, 10))
+    plt.figure(figsize=(14, 9))
     
     # Plot Close Price and Moving Averages
     plt.subplot(2, 1, 1)
