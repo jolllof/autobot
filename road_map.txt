@@ -2,17 +2,13 @@ GAME PLAN (Trend Following Bot)
 
 * maintain a manual list of tickers
 * pull categories of stocks from finnhub
-#TODO: review other endpoints from finnhub
 * plot Moving AVGs, RSI and MACD (as well as others to determine best time to buy or sell)
 * E.g: if RSA hit 70 in the past week and on the downward SELL, if it hit 30 in the past week and on the UPWARD buy
 * Send Text Messages of stocks to review but eventually auto buy and sell.
+#TODO: review other endpoints from finnhub
+*#TODO: ADD build devops features (poetry, pre-configs clean ups etc)
 
 
-
-
-
-
-Trend-Following Bot vs Mean Reversion Bot
 
 
 #Trend-Following Bot
@@ -24,12 +20,6 @@ How It Works: The bot identifies trends in the market and takes positions accord
 Considerations:
 Works best in trending markets.
 Test and optimize with historical data to avoid false signals.
-
-
-
-
-
-
 
 
 #Mean Reversion Bot
