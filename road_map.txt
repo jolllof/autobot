@@ -1,6 +1,18 @@
+GAME PLAN (Trend Following Bot)
+
+* maintain a manual list of tickers
+* pull categories of stocks from finnhub
+#TODO: review other endpoints from finnhub
+* plot Moving AVGs, RSI and MACD (as well as others to determine best time to buy or sell)
+* E.g: if RSA hit 70 in the past week and on the downward SELL, if it hit 30 in the past week and on the UPWARD buy
+* Send Text Messages of stocks to review but eventually auto buy and sell.
+
+
+
+
+
 
 Trend-Following Bot vs Mean Reversion Bot
-
 
 
 #Trend-Following Bot
@@ -13,8 +25,11 @@ Considerations:
 Works best in trending markets.
 Test and optimize with historical data to avoid false signals.
 
-Combine RSA and Moving Averages to compare stocks
-if RSA hit 70 in the past week and on the downward SELL, if it hit 30 in the past week and on the UPWARD buy
+
+
+
+
+
 
 
 #Mean Reversion Bot
@@ -26,6 +41,11 @@ How It Works: The bot buys when prices drop below a predefined range and sells w
 Considerations:
 Best for stable, non-volatile markets.
 Requires less frequent monitoring but regular strategy validation.
+
+
+
+
+
 
 
 
@@ -43,13 +63,20 @@ robinhood to keep track of my pre-existing investments in context to autobot
 
 
 
+
+
+
+
+
+
+
 Here is a list of files typically necessary for building and managing a Python trading bot:
 
 1. Main Bot File (e.g., main.py)
 This is the core of your bot, where the main logic for the trading process runs. It might include functions for fetching data, executing trades, and managing the trading strategy.
 
 
-2. Configuration File (e.g., config.py or config.json)
+2. Configuration File (e.g., config.py or config.json) ***
 This file stores configuration settings such as API keys, account credentials, trading parameters (like risk management), and other adjustable settings for the bot.
 
 

@@ -4,6 +4,7 @@ import os
 import yaml
 from rsi_movingavg import *
 from textbot import send_sms_via_email
+from finnhub import *
 import structlog
 from datetime import datetime, timedelta
 
@@ -11,10 +12,10 @@ logger = structlog.get_logger()
 os.system('clear')
 plot=False
 
-def load_tickers_from_config(config_path):
+def load_from_config(config_path, values):
 	with open(config_path, 'r') as file:
 		config = yaml.safe_load(file)
-		return config.get('tickers', [])
+		return config.get(values, [])
 
 def get_rsi_and_movingavgs(ticker, start_date, end_date):
 	logger.info(f"Getting RSI and Moving AVG for {ticker}")
@@ -45,7 +46,20 @@ def main():
 	logger.info(f'Date Range: {start_date} - {end_date}')
 
 	config_path = 'config.yaml'
-	tickers=load_tickers_from_config(config_path)
+	
+	#FinnHub Stock Categories
+	finnhub_creds=load_from_config(config_path,'finnhub')
+	stock_categories=load_from_config(config_path,'stock_categories')
+	finnhub_base_url=finnhub_creds['base_url']
+	finnhub_api_key=os.getenv(finnhub_creds['api_key'])
+
+	symbols=get_all_stocks(finnhub_api_key, finnhub_base_url)
+	matches=get_stock_groups(symbols, stock_categories)
+
+	x=input(matches)
+
+	#specific tickers for RSI AVGs
+	tickers=load_from_config(config_path, 'tickers')
 	for ticker in tickers:
 		ticker, rsi=get_rsi_and_movingavgs(ticker, start_date, end_date)
 		if rsi == 'high_rsi':
@@ -55,12 +69,11 @@ def main():
 	
 	logger.info(f"High RSI: {' '.join(high_rsi)} \nLow RSI: {' '.join(low_rsi)}")
 	
+
+
 	#txt='RSI movers: '+' '.join(rsi_tickers)
 	#print(txt)
-	
-	
 
-	
 	# text_message=f""
 	# send_sms_via_email(text_message)
 

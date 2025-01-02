@@ -1,2 +1,11 @@
-python-binance
-alpaca-py
+os
+yaml
+structlog
+datetime
+yfinance
+pandas
+numpy
+matplotlib
+smtplib
+email
+requests

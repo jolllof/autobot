@@ -2,6 +2,12 @@ binance_creds:
   api_key: "${binance_key}"
   api_secret: "${binance_secret}"
 
+finnhub:
+  api_key: "finnhub_api_key" #os environment variable
+  base_url: "https://finnhub.io/api/v1"
+
+stock_categories:
+  - AI
 tickers:
   - AAPL
   - AI
