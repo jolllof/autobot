@@ -8,7 +8,8 @@ finnhub:
 
 stock_categories:
   - AI
-tickers:
+  - TECH
+robinhood_tickers:
   - AAPL
   - AI
   - AMD

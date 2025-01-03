@@ -1,12 +1,23 @@
-GAME PLAN (Trend Following Bot)
+************ BUSINESS GAME PLAN (Trend Following Bot) ************
 
 * maintain a manual list of tickers
 * pull categories of stocks from finnhub
-* plot Moving AVGs, RSI and MACD (as well as others to determine best time to buy or sell)
-* E.g: if RSA hit 70 in the past week and on the downward SELL, if it hit 30 in the past week and on the UPWARD buy
+* PHASE 1: 
+    Moving AVGs: Widely separated moving averages (e.g., 20 EMA and 50 EMA) suggest a trend., 
+    ATR to measure volatility (High ATR = trending potential; Low ATR = likely mean-reversion.)
+    ADX  (> 25 signals a strong trend, while < 20 indicates a weak trend)
+    RSI (above 70 RSI means sell, under 30 RSI means buy) **ONLY use when confirmed by Moving AVGs 
+    Volume-based filter to confirm breakouts/trend strength (Relative Volume > 1.5 often indicates strong participation)
+
+PHASE 2:
+    Market Regime Detection (a way to identify market transition from trending to ranging e.g: Bollinger Bands or Mean-reversion)
+    Dynamic Stop-Loss and Take Profit Levels: Use recent ATR or Volatility to set new risk/reward levels
+    Multi-Timeframe Analysis:
+
+
 * Send Text Messages of stocks to review but eventually auto buy and sell.
 #TODO: review other endpoints from finnhub
-*#TODO: ADD build devops features (poetry, pre-configs clean ups etc)
+*#TODO: ADD build devops features (auto schedule on github actions poetry, pre-configs clean ups etc)
 
 
 
@@ -39,20 +50,12 @@ Requires less frequent monitoring but regular strategy validation.
 
 
 
+************ TECHNICAL ************
+
 APIS:
 yfinance for specific stock data
 finnhub for all stocks and their categories
 robinhood to keep track of my pre-existing investments in context to autobot
-
-
-
-
-
-
-
-
-
-
 
 
 

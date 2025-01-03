@@ -1,8 +1,6 @@
-#TODO: line 49 split message between low RSI and high RSI
-
 import os
-import yaml
-from rsi_movingavg import *
+from strategy import *
+from utilities import *
 from textbot import send_sms_via_email
 from finnhub import *
 import structlog
@@ -10,65 +8,31 @@ from datetime import datetime, timedelta
 
 logger = structlog.get_logger()
 os.system('clear')
-plot=False
 
-def load_from_config(config_path, values):
-	with open(config_path, 'r') as file:
-		config = yaml.safe_load(file)
-		return config.get(values, [])
-
-def get_rsi_and_movingavgs(ticker, start_date, end_date):
-	logger.info(f"Getting RSI and Moving AVG for {ticker}")
-	
-	stock_data = get_stock_data(ticker, start_date, end_date)
-	stock_data = calculate_moving_averages(stock_data)
-	stock_data = calculate_rsi(stock_data)
-	latest_rsi = stock_data['RSI'].iloc[-1]
-
-	if latest_rsi < 30:
-		return ticker,'low_rsi'
-		if plot:
-			plot_indicators(stock_data, ticker)
-	elif latest_rsi > 70:
-		return ticker, 'high_rsi'
-		if plot:
-			plot_indicators(stock_data, ticker)
-	else:
-		logger.info(f"Skipping {ticker}: RSI is within normal range ({latest_rsi:.2f})")
-		return None, None
 def main():
 	logger.info('Initiating Autobot')
-	low_rsi=[]
-	high_rsi=[]
 
 	end_date = datetime.today().date()
 	start_date = datetime.today().date() - timedelta(days=730)
 	logger.info(f'Date Range: {start_date} - {end_date}')
 
+	#Configuration
 	config_path = 'config.yaml'
-	
-	#FinnHub Stock Categories
+	tickers=load_from_config(config_path, 'robinhood_tickers')
 	finnhub_creds=load_from_config(config_path,'finnhub')
 	stock_categories=load_from_config(config_path,'stock_categories')
+
 	finnhub_base_url=finnhub_creds['base_url']
 	finnhub_api_key=os.getenv(finnhub_creds['api_key'])
-
+	
+	#FinnHub Stock Categories
 	symbols=get_all_stocks(finnhub_api_key, finnhub_base_url)
 	matches=get_stock_groups(symbols, stock_categories)
 
 	x=input(matches)
 
-	#specific tickers for RSI AVGs
-	tickers=load_from_config(config_path, 'tickers')
-	for ticker in tickers:
-		ticker, rsi=get_rsi_and_movingavgs(ticker, start_date, end_date)
-		if rsi == 'high_rsi':
-			high_rsi.append(ticker)
-		elif rsi == 'low_rsi':
-			low_rsi.append(ticker)
-	
-	logger.info(f"High RSI: {' '.join(high_rsi)} \nLow RSI: {' '.join(low_rsi)}")
-	
+	#Run Moving AVG, ADX, ATR, RSI and Volume Based Filter
+	run_analysis(tickers, start_date, end_date)
 
 
 	#txt='RSI movers: '+' '.join(rsi_tickers)
