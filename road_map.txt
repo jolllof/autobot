@@ -1,5 +1,7 @@
 ************ BUSINESS GAME PLAN (Trend Following Bot) ************
 
+* Define whether its going to be a day trader (14 day period) Position Trader (90 days or more) CURRENTLY SET TO 14 days
+* Simplify Outputs, BEEF UP algorithm
 * maintain a manual list of tickers
 * pull categories of stocks from finnhub
 * PHASE 1: 
@@ -10,9 +12,11 @@
     Volume-based filter to confirm breakouts/trend strength (Relative Volume > 1.5 often indicates strong participation)
 
 PHASE 2:
+    BackTest on Historical Data
     Market Regime Detection (a way to identify market transition from trending to ranging e.g: Bollinger Bands or Mean-reversion)
     Dynamic Stop-Loss and Take Profit Levels: Use recent ATR or Volatility to set new risk/reward levels
-    Multi-Timeframe Analysis:
+    Multi-Timeframe Analysis
+    Async.IO
 
 
 * Send Text Messages of stocks to review but eventually auto buy and sell.

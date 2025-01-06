@@ -28,11 +28,11 @@ def main():
 	#FinnHub Stock Categories
 	symbols=get_all_stocks(finnhub_api_key, finnhub_base_url)
 	matches=get_stock_groups(symbols, stock_categories)
-
-	x=input(matches)
+	matches=list(matches.keys())
+	#x=input(list(matches.keys()))
 
 	#Run Moving AVG, ADX, ATR, RSI and Volume Based Filter
-	run_analysis(tickers, start_date, end_date)
+	run_analysis(matches, start_date, end_date)
 
 
 	#txt='RSI movers: '+' '.join(rsi_tickers)
