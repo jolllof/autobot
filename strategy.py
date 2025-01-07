@@ -14,7 +14,8 @@ calc_config= {
 	"atr_quantile": 0.75,
     "trend_threshold": 0.1,
 	"low_rsi": 30,
-	"high_rsi": 70
+	"high_rsi": 70,
+	"relative_volume_threshold": 1.5
 }
 
 # Fetch historical data for a stock
@@ -76,6 +77,14 @@ def get_atr(data):
 	
 	return data
 
+
+#Volume Based Filter
+def volumefilter(data):
+	relative_volume_threshold=calc_config['relative_volume_threshold']
+	data['Relative_Volume'] = data['Volume'] / data['Volume'].rolling(window=20).mean()
+	data['Volume_Confirmed'] = data['Relative_Volume'] > relative_volume_threshold
+	return data
+
 # Plot stock data with indicators
 def plot_indicators(data, ticker):
 	plt.figure(figsize=(14, 9))
@@ -105,7 +114,8 @@ def get_indicators(ticker, start_date, end_date):
 	if not stock_data.empty:
 		stock_data = get_moving_averages(stock_data)
 		stock_data = get_rsi(stock_data)
-		stock_data = get_atr(stock_data) 
+		stock_data = get_atr(stock_data)
+		stock_data = volumefilter(stock_data)
 	
 		return stock_data, ticker
 	else:
@@ -128,17 +138,18 @@ def run_analysis(tickers, start_date, end_date, plot=False):
 			atr_quantile=calc_config['atr_quantile']
 			atr_threshold = stock_data['ATR'].quantile(atr_quantile)
 			atr_above_threshold=latest_atr > atr_threshold
+			latest_volume_confirmed = stock_data['Volume_Confirmed'].iloc[-1]
 
-			if rsi_is_low and trend_status and atr_above_threshold:
+			if rsi_is_low and trend_status and atr_above_threshold and latest_volume_confirmed:
 				buystocks.append(ticker)
 				if plot:
 					plot_indicators(stock_data, ticker)
-			elif rsi_is_high and trend_status and atr_above_threshold:
+			elif rsi_is_high and trend_status and atr_above_threshold and latest_volume_confirmed:
 				sellstocks.append(ticker)
 				if plot:
 					plot_indicators(stock_data, ticker)
 			else:
-				logger.info(f"Skipping {ticker}: Trending Moving AVG:{trend_status}, RSI:{latest_rsi:.2f}, ATR:{latest_atr:.2f}/{atr_threshold:.2f}\n")
+				logger.info(f"Skipping {ticker}: Trending Moving AVG:{trend_status}, RSI:{latest_rsi:.2f}, ATR:{latest_atr:.2f}/{atr_threshold:.2f}, Volume:{latest_volume_confirmed}\n")
 		except ValueError:
 			logger.warn(f'{ticker} completely failed. skipping')
 
