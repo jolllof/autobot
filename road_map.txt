@@ -5,11 +5,16 @@
 * maintain a manual list of tickers
 * pull categories of stocks from finnhub
 * PHASE 1: 
-    Moving AVGs: Widely separated moving averages (e.g., 20 EMA and 50 EMA) suggest a trend., 
-    ATR to measure volatility (High ATR = trending potential; Low ATR = likely mean-reversion.)
-    ADX  (> 25 signals a strong trend, while < 20 indicates a weak trend)
-    RSI (above 70 RSI means sell, under 30 RSI means buy) **ONLY use when confirmed by Moving AVGs 
-    Volume-based filter to confirm breakouts/trend strength (Relative Volume > 1.5 often indicates strong participation)
+    Technical Analysis
+        Moving AVGs: Widely separated moving averages (e.g., 20 EMA and 50 EMA) suggest a trend., 
+        ATR to measure volatility (High ATR = trending potential; Low ATR = likely mean-reversion.)
+        ADX  (> 25 signals a strong trend, while < 20 indicates a weak trend)
+        RSI (above 70 RSI means sell, under 30 RSI means buy) **ONLY use when confirmed by Moving AVGs 
+        Volume-based filter to confirm breakouts/trend strength (Relative Volume > 1.5 often indicates strong participation)
+    Fundamental Analysis:
+        Low Price-to-Earnings (P/E): undervaluation compared to peers.
+        High Earnings Growth: Companies with strong growth potential but little attention
+        Low Debt-To-Equity Ratio: Financially stable companies with room to grow.
 
 PHASE 2:
     BackTest on Historical Data
@@ -17,7 +22,12 @@ PHASE 2:
     Dynamic Stop-Loss and Take Profit Levels: Use recent ATR or Volatility to set new risk/reward levels
     Multi-Timeframe Analysis
     Async.IO
-
+    Fundamental Analysis:
+        Insider Buying: Indicates confidence from management in future performance.
+        MACD
+        Bollinger Bands
+    Technical Analysis:
+        Consolidation Zones: Stocks trading sideways in a tight range, indicating accumulation by smart money.
 
 * Send Text Messages of stocks to review but eventually auto buy and sell.
 #TODO: review other endpoints from finnhub

@@ -1,14 +1,18 @@
 #TODO: get_indicators() is passing the same stock data from function to function, review to make sure that previous function is not altering stock data in a way that affects the next
-#TODO: review logic for thresholds (ATR and moving AVG)
+#TODO: review logic for thresholds (ATR, RSI and moving AVG)
 
 import yfinance as yf
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-
 import structlog
+
 logger = structlog.get_logger()
-plot=False
+calc_config= {
+    "rsi_window": 14,
+    "atr_window": 14,
+    "trend_threshold": 0.01
+}
 
 # Fetch historical data for a stock
 def get_stock_data(ticker, start_date, end_date):
@@ -17,11 +21,14 @@ def get_stock_data(ticker, start_date, end_date):
 
 # Calculate Moving Averages
 def get_moving_averages(data, short_window=50, long_window=200):
-	data['MA_Short'] = data['Close'].rolling(window=short_window).mean()
-	data['MA_Long'] = data['Close'].rolling(window=long_window).mean()
-	return data
+    result = data.copy()
+    result['MA_Short'] = result['Close'].rolling(window=short_window).mean()
+    result['MA_Long'] = result['Close'].rolling(window=long_window).mean()
+    return result
 
-def avg_is_trending(data, threshold=0.01):
+def avg_is_trending(data):
+
+	threshold=calc_config['trend_threshold']
 	if 'MA_Short' not in data or 'MA_Long' not in data:
 		raise ValueError("Data must contain 'MA_Short' and 'MA_Long' columns.")
 	
@@ -38,7 +45,9 @@ def avg_is_trending(data, threshold=0.01):
 		logger.warn(f" avg_is_trending failed: \n{data}")
 
 # Calculate RSI
-def get_rsi(data, window=14):
+def get_rsi(data):
+
+	window=calc_config['rsi_window']
 	delta = data['Close'].diff()
 	gain = (delta.where(delta > 0, 0)).rolling(window=window).mean()
 	loss = (-delta.where(delta < 0, 0)).rolling(window=window).mean()
@@ -47,7 +56,9 @@ def get_rsi(data, window=14):
 	return data
 
 # Calculate Average True Range
-def get_atr(data, window=14):
+def get_atr(data):
+
+	window=calc_config['atr_window']
 	# Calculate True Range (TR)
 	high_low = data['High'] - data['Low']
 	high_close = abs(data['High'] - data['Close'].shift(1))
@@ -91,19 +102,18 @@ def get_indicators(ticker, start_date, end_date):
 		stock_data = get_moving_averages(stock_data)
 		stock_data = get_rsi(stock_data)
 		stock_data = get_atr(stock_data) 
-		
+	
 		return stock_data, ticker
 	else:
 		return []
 
-def run_analysis(tickers, start_date, end_date):
+def run_analysis(tickers, start_date, end_date, plot=False):
 	low_rsi=[]
 	high_rsi=[]
 
 	for ticker in tickers:
 		try:
 			stock_data, ticker=get_indicators(ticker, start_date, end_date)
-			
 			trend_status = avg_is_trending(stock_data)
 
 			latest_rsi = stock_data['RSI'].iloc[-1]
@@ -111,7 +121,7 @@ def run_analysis(tickers, start_date, end_date):
 			rsi_is_high = latest_rsi > 70
 
 			latest_atr=stock_data['ATR'].iloc[-1]
-			atr_threshold = stock_data['ATR'].mean() * 1.5
+			atr_threshold = stock_data['ATR'].quantile(0.75)
 			atr_above_threshold=latest_atr > atr_threshold
 
 			if rsi_is_low and trend_status and atr_above_threshold:

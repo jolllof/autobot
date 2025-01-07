@@ -6,6 +6,10 @@ finnhub:
   api_key: "finnhub_api_key" #os environment variable
   base_url: "https://finnhub.io/api/v1"
 
+
+yahoo_finance:
+  trending_url: "https://finance.yahoo.com/trending-tickers"
+
 stock_categories:
   - AI
   - TECH

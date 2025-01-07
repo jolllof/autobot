@@ -9,3 +9,5 @@ matplotlib
 smtplib
 email
 requests
+bs4
+json
