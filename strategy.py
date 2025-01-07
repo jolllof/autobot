@@ -11,7 +11,10 @@ logger = structlog.get_logger()
 calc_config= {
     "rsi_window": 14,
     "atr_window": 14,
-    "trend_threshold": 0.01
+	"atr_quantile": 0.75,
+    "trend_threshold": 0.1,
+	"low_rsi": 30,
+	"high_rsi": 70
 }
 
 # Fetch historical data for a stock
@@ -28,7 +31,7 @@ def get_moving_averages(data, short_window=50, long_window=200):
 
 def avg_is_trending(data):
 
-	threshold=calc_config['trend_threshold']
+	trend_threshold=calc_config['trend_threshold']
 	if 'MA_Short' not in data or 'MA_Long' not in data:
 		raise ValueError("Data must contain 'MA_Short' and 'MA_Long' columns.")
 	
@@ -36,8 +39,9 @@ def avg_is_trending(data):
 	data['Trend_Strength'] = (data['MA_Short'] - data['MA_Long']) / data['MA_Long']
 	
 	# Determine if the trend strength exceeds the threshold
-	data['Is_Trending'] = data['Trend_Strength'].abs() > threshold
-	
+	data['Dynamic_Trend_Threshold'] = data['ATR'] * trend_threshold
+	data['Is_Trending'] = data['Trend_Strength'].abs() > data['Dynamic_Trend_Threshold']
+
 	try:
 	# Return the last row's trend status
 		return data['Is_Trending'].iloc[-1]
@@ -108,8 +112,8 @@ def get_indicators(ticker, start_date, end_date):
 		return []
 
 def run_analysis(tickers, start_date, end_date, plot=False):
-	low_rsi=[]
-	high_rsi=[]
+	buystocks=[]
+	sellstocks=[]
 
 	for ticker in tickers:
 		try:
@@ -117,19 +121,20 @@ def run_analysis(tickers, start_date, end_date, plot=False):
 			trend_status = avg_is_trending(stock_data)
 
 			latest_rsi = stock_data['RSI'].iloc[-1]
-			rsi_is_low = latest_rsi < 30
-			rsi_is_high = latest_rsi > 70
+			rsi_is_low = latest_rsi < calc_config['low_rsi']
+			rsi_is_high = latest_rsi > calc_config['high_rsi']
 
 			latest_atr=stock_data['ATR'].iloc[-1]
-			atr_threshold = stock_data['ATR'].quantile(0.75)
+			atr_quantile=calc_config['atr_quantile']
+			atr_threshold = stock_data['ATR'].quantile(atr_quantile)
 			atr_above_threshold=latest_atr > atr_threshold
 
 			if rsi_is_low and trend_status and atr_above_threshold:
-				low_rsi.append(ticker)
+				buystocks.append(ticker)
 				if plot:
 					plot_indicators(stock_data, ticker)
 			elif rsi_is_high and trend_status and atr_above_threshold:
-				high_rsi.append(ticker)
+				sellstocks.append(ticker)
 				if plot:
 					plot_indicators(stock_data, ticker)
 			else:
@@ -137,4 +142,4 @@ def run_analysis(tickers, start_date, end_date, plot=False):
 		except ValueError:
 			logger.warn(f'{ticker} completely failed. skipping')
 
-	logger.info(f"High RSI: {' '.join(high_rsi)} \nLow RSI: {' '.join(low_rsi)}")
+	logger.info(f"SELL STOCKS: {' '.join(sellstocks)} \nBUY STOCKS: {' '.join(buystocks)}")

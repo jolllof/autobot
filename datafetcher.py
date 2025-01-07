@@ -37,7 +37,7 @@ def fetch_trending_tickers(url):
 	flatjsoncontent=parse_collections(json_content)
 	trending_df=pd.DataFrame(flatjsoncontent)
 
-	trending_df.to_csv('yf_trending.csv')
+	#trending_df.to_csv('yf_trending.csv')
 
 	return trending_df
 
