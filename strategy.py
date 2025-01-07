@@ -1,7 +1,7 @@
 #TODO: get_indicators() is passing the same stock data from function to function, review to make sure that previous function is not altering stock data in a way that affects the next
-#TODO: review logic for thresholds (ATR, RSI and moving AVG)
+#TODO: Libraries like backtrader or pyalgotrade for backtesting
 
-import yfinance as yf
+from datafetcher import *
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -17,11 +17,6 @@ calc_config= {
 	"high_rsi": 70,
 	"relative_volume_threshold": 1.5
 }
-
-# Fetch historical data for a stock
-def get_stock_data(ticker, start_date, end_date):
-	stock_data = yf.download(ticker, start=start_date, end=end_date)
-	return stock_data
 
 # Calculate Moving Averages
 def get_moving_averages(data, short_window=50, long_window=200):
@@ -42,10 +37,15 @@ def avg_is_trending(data):
 	# Determine if the trend strength exceeds the threshold
 	data['Dynamic_Trend_Threshold'] = data['ATR'] * trend_threshold
 	data['Is_Trending'] = data['Trend_Strength'].abs() > data['Dynamic_Trend_Threshold']
+	# Determine trend direction (bullish or bearish)
+	data['Trend_Direction'] = data['Trend_Strength'].apply(lambda x: 'Bullish' if x > 0 else 'Bearish')
 
 	try:
 	# Return the last row's trend status
-		return data['Is_Trending'].iloc[-1]
+		return {
+            'is_trending': data['Is_Trending'].iloc[-1],
+            'trend_direction': data['Trend_Direction'].iloc[-1],
+        }
 	except IndexError:
 		logger.warn(f" avg_is_trending failed: \n{data}")
 
@@ -128,29 +128,41 @@ def run_analysis(tickers, start_date, end_date, plot=False):
 	for ticker in tickers:
 		try:
 			stock_data, ticker=get_indicators(ticker, start_date, end_date)
-			trend_status = avg_is_trending(stock_data)
 
+			#Moving AVG Trend
+			avg_trend_stats = avg_is_trending(stock_data)
+			avg_trending=avg_trend_stats['is_trending']
+			avg_trend_direction=avg_trend_stats['trend_direction']
+
+			#RSI
 			latest_rsi = stock_data['RSI'].iloc[-1]
 			rsi_is_low = latest_rsi < calc_config['low_rsi']
 			rsi_is_high = latest_rsi > calc_config['high_rsi']
 
+			#ATR
 			latest_atr=stock_data['ATR'].iloc[-1]
 			atr_quantile=calc_config['atr_quantile']
 			atr_threshold = stock_data['ATR'].quantile(atr_quantile)
 			atr_above_threshold=latest_atr > atr_threshold
+
+			#Volume Filter
 			latest_volume_confirmed = stock_data['Volume_Confirmed'].iloc[-1]
 
-			if rsi_is_low and trend_status and atr_above_threshold and latest_volume_confirmed:
+			
+	
+			if rsi_is_low and avg_trending and avg_trend_direction == 'Bullish' and atr_above_threshold and latest_volume_confirmed:
 				buystocks.append(ticker)
 				if plot:
 					plot_indicators(stock_data, ticker)
-			elif rsi_is_high and trend_status and atr_above_threshold and latest_volume_confirmed:
+			elif rsi_is_high and avg_trending and avg_trend_direction == 'Bearish' and atr_above_threshold and latest_volume_confirmed:
 				sellstocks.append(ticker)
 				if plot:
 					plot_indicators(stock_data, ticker)
 			else:
-				logger.info(f"Skipping {ticker}: Trending Moving AVG:{trend_status}, RSI:{latest_rsi:.2f}, ATR:{latest_atr:.2f}/{atr_threshold:.2f}, Volume:{latest_volume_confirmed}\n")
+				logger.info(f"Skipping {ticker}: Trending Moving AVG:{avg_trending}, RSI:{latest_rsi:.2f}, ATR:{latest_atr:.2f}/{atr_threshold:.2f}, Volume:{latest_volume_confirmed}\n")
 		except ValueError:
 			logger.warn(f'{ticker} completely failed. skipping')
+		except TypeError:
+			x=input()
 
 	logger.info(f"SELL STOCKS: {' '.join(sellstocks)} \nBUY STOCKS: {' '.join(buystocks)}")

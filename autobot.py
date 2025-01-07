@@ -1,5 +1,6 @@
 #TODO: finnhub basic financials could provide more details for stock's performance
 #TODO: track price changes likely in plots
+#TODO: add ADX calculations
 
 
 import os
@@ -24,6 +25,7 @@ def main():
 
 	#Robinhood
 	robinhoodstocks=load_from_config(config_path, 'robinhood_tickers')
+	fourstopstocks=load_from_config(config_path, 'fourstopstocks')
 
 	#FINNHUB Categorial Stock Search
 	stock_categories=load_from_config(config_path,'stock_categories')
@@ -43,9 +45,10 @@ def main():
 
 
 	#Run Moving AVG, ADX, ATR, RSI and Volume Based Filter
-	run_analysis(trendingstocks, start_date, end_date)
-	#run_analysis(categoricalstocks, start_date, end_date)
+	#run_analysis(trendingstocks, start_date, end_date)
+	run_analysis(categoricalstocks, start_date, end_date)
 	#run_analysis(robinhoodstocks, start_date, end_date, plot=True)
+	#run_analysis(fourstopstocks, start_date, end_date, plot=True)
 
 
 

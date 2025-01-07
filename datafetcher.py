@@ -23,6 +23,11 @@ def get_stock_groups(symbols, keywords):
 	return matched_stocks
 
 #YAHOO FINANCE
+def get_stock_data(ticker, start_date, end_date):
+	# Fetch historical data for a stock
+	stock_data = yf.download(ticker, start=start_date, end=end_date)
+	return stock_data
+
 def fetch_trending_tickers(url):
 	#Yahoo Finance Trending Tickers
 	headers = {
@@ -40,4 +45,3 @@ def fetch_trending_tickers(url):
 	#trending_df.to_csv('yf_trending.csv')
 
 	return trending_df
-
