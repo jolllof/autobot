@@ -46,8 +46,8 @@ def main():
 
 	#Run Moving AVG, ADX, ATR, RSI and Volume Based Filter
 	#run_analysis(trendingstocks, start_date, end_date)
-	run_analysis(categoricalstocks, start_date, end_date)
-	#run_analysis(robinhoodstocks, start_date, end_date, plot=True)
+	#run_analysis(categoricalstocks, start_date, end_date)
+	run_analysis(robinhoodstocks, start_date, end_date, plot=True)
 	#run_analysis(fourstopstocks, start_date, end_date, plot=True)
 
 

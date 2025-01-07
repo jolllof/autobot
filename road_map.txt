@@ -126,7 +126,6 @@ Contains any utility functions used across the bot, such as date/time functions,
 12. Scheduler File (scheduler.py)
 If the bot needs to run at regular intervals (e.g., every minute or hour), this file helps schedule tasks using Python’s schedule library or a cron job.
 
-
 13. API Interaction File (e.g., api_client.py)
 Contains classes and functions to interact with specific exchange APIs (e.g., Binance, Coinbase, Kraken, etc.), handling authentication, request/response, and error handling.
 14. Test Files (e.g., test_bot.py, test_strategy.py)

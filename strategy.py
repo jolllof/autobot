@@ -9,10 +9,10 @@ import structlog
 
 logger = structlog.get_logger()
 calc_config= {
-    "rsi_window": 14,
-    "atr_window": 14,
+	"rsi_window": 14,
+	"atr_window": 14,
 	"atr_quantile": 0.75,
-    "trend_threshold": 0.1,
+	"trend_threshold": 0.1,
 	"low_rsi": 30,
 	"high_rsi": 70,
 	"relative_volume_threshold": 1.5
@@ -20,10 +20,10 @@ calc_config= {
 
 # Calculate Moving Averages
 def get_moving_averages(data, short_window=50, long_window=200):
-    result = data.copy()
-    result['MA_Short'] = result['Close'].rolling(window=short_window).mean()
-    result['MA_Long'] = result['Close'].rolling(window=long_window).mean()
-    return result
+	result = data.copy()
+	result['MA_Short'] = result['Close'].rolling(window=short_window).mean()
+	result['MA_Long'] = result['Close'].rolling(window=long_window).mean()
+	return result
 
 def avg_is_trending(data):
 
@@ -43,9 +43,9 @@ def avg_is_trending(data):
 	try:
 	# Return the last row's trend status
 		return {
-            'is_trending': data['Is_Trending'].iloc[-1],
-            'trend_direction': data['Trend_Direction'].iloc[-1],
-        }
+			'is_trending': data['Is_Trending'].iloc[-1],
+			'trend_direction': data['Trend_Direction'].iloc[-1],
+		}
 	except IndexError:
 		logger.warn(f" avg_is_trending failed: \n{data}")
 
@@ -88,24 +88,61 @@ def volumefilter(data):
 # Plot stock data with indicators
 def plot_indicators(data, ticker):
 	plt.figure(figsize=(14, 9))
-	
+
+	#Get the latest stock price
+	latest_close_price = data['Close'].iloc[-1].values.item()
+
 	# Plot Close Price and Moving Averages
-	plt.subplot(2, 1, 1)
+	plt.subplot(3, 1, 1)
 	plt.plot(data['Close'], label='Close Price', color='black', linewidth=1.2)
 	plt.plot(data['MA_Short'], label='20-Day MA', color='blue', linestyle='--')
 	plt.plot(data['MA_Long'], label='50-Day MA', color='orange', linestyle='--')
-	plt.title(f'{ticker} Stock Price with Moving Averages')
+	plt.title(f'{ticker} ${latest_close_price:.2f} Moving Averages')
 	plt.legend()
 	
 	# Plot RSI
-	plt.subplot(2, 1, 2)
+	plt.subplot(3, 1, 2)
 	plt.plot(data['RSI'], label='RSI', color='purple')
 	plt.axhline(70, color='red', linestyle='--', linewidth=0.7)
 	plt.axhline(30, color='green', linestyle='--', linewidth=0.7)
 	plt.title('Relative Strength Index (RSI)')
 	plt.legend()
+
+	# Plot Price Changes (Percentage Change)
+	data['Price_Change'] = data['Close'].pct_change() * 100
+	plt.subplot(3, 1, 3)
+	plt.plot(data['Price_Change'], label='Price Change (%)', color='green')
+	plt.title('Price Change (%)')
+	plt.legend()
+
 	plt.tight_layout()
 	plt.show()
+
+# def plot_indicators(data, ticker):
+# 	plt.figure(figsize=(14, 9))
+
+# 	# Get the latest stock price
+# 	latest_close_price = data['Close'].iloc[-1].values.item()
+
+# 	# Plot Close Price and Moving Averages
+# 	plt.subplot(2, 1, 1)
+# 	plt.plot(data['Close'], label='Close Price', color='black', linewidth=1.2)
+# 	plt.plot(data['MA_Short'], label='20-Day MA', color='blue', linestyle='--')
+# 	plt.plot(data['MA_Long'], label='50-Day MA', color='orange', linestyle='--')
+# 	plt.title(f'{ticker} (${latest_close_price:.2f}) Moving Averages')
+# 	plt.legend()
+# 	plt.xticks(range(0, len(data), max(1, len(data) // 10)), data['Date_Label'][::max(1, len(data) // 10)], rotation=45)
+	
+# 	# Plot RSI
+# 	plt.subplot(2, 1, 2)
+# 	plt.plot(data['RSI'], label='RSI', color='purple')
+# 	plt.axhline(70, color='red', linestyle='--', linewidth=0.7)
+# 	plt.axhline(30, color='green', linestyle='--', linewidth=0.7)
+# 	plt.title('Relative Strength Index (RSI)')
+# 	plt.legend()
+# 	plt.tight_layout()
+# 	plt.show()
+
 
 def get_indicators(ticker, start_date, end_date):
 	logger.info(f"Getting Indicators for {ticker}")
@@ -148,8 +185,6 @@ def run_analysis(tickers, start_date, end_date, plot=False):
 			#Volume Filter
 			latest_volume_confirmed = stock_data['Volume_Confirmed'].iloc[-1]
 
-			
-	
 			if rsi_is_low and avg_trending and avg_trend_direction == 'Bullish' and atr_above_threshold and latest_volume_confirmed:
 				buystocks.append(ticker)
 				if plot:
@@ -160,9 +195,9 @@ def run_analysis(tickers, start_date, end_date, plot=False):
 					plot_indicators(stock_data, ticker)
 			else:
 				logger.info(f"Skipping {ticker}: Trending Moving AVG:{avg_trending}, RSI:{latest_rsi:.2f}, ATR:{latest_atr:.2f}/{atr_threshold:.2f}, Volume:{latest_volume_confirmed}\n")
-		except ValueError:
-			logger.warn(f'{ticker} completely failed. skipping')
-		except TypeError:
-			x=input()
+		#except ValueError:
+		except Exception as e:
+			logger.warn(f'{ticker} completely failed. skipping {e}')
+
 
 	logger.info(f"SELL STOCKS: {' '.join(sellstocks)} \nBUY STOCKS: {' '.join(buystocks)}")
