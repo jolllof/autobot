@@ -1,73 +1,34 @@
 import structlog
-import logging
-from datetime import datetime
+from colorama import Fore, Style
 
-# Setting up logging
-logging.basicConfig(
-    format="%(message)s",  # Only the structured log output
-    level=logging.DEBUG,
-)
-
-# Create a structlog processor to format the log output
-def add_timestamp(_, __, event_dict):
-    """Add timestamp to each log entry."""
-    event_dict["timestamp"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    return event_dict
-
-# Set up structlog with the desired processors
-log = structlog.get_logger()
-
-# Add processors for structlog formatting
-log.configure(
+# Configure structlog
+structlog.configure(
     processors=[
-        structlog.processors.KeyValueRenderer(key_order=["timestamp", "event"]),
-        add_timestamp,  # Custom processor to add the timestamp
-        structlog.processors.JSONRenderer(),  # Optional: for JSON output
+        structlog.processors.KeyValueRenderer(key_order=["event"]),  # Optional: Ensures "event" is first
     ],
     context_class=dict,
-    wrapper_class=structlog.stdlib.BoundLogger,
-    logger_factory=structlog.stdlib.get_logger,
+    wrapper_class=structlog.make_filtering_bound_logger(10),
+    logger_factory=structlog.PrintLoggerFactory(),
+    cache_logger_on_first_use=True,
 )
 
-# Example of structured logging usage
-def log_trade_execution(order_type, amount, price, status):
-    """Log trade executions with structured data."""
-    log.info(
-        "Executed trade",
-        order_type=order_type,
-        amount=amount,
-        price=price,
-        status=status,
-    )
+# Initialize logger
+logger = structlog.get_logger()
 
-def log_trade_error(error_message):
-    """Log errors in trade execution."""
-    log.error("Error occurred", error_message=error_message)
+# Example usage with colorized log message
+ticker = "RGTI"
+avg_trending = True
+avg_trend_direction = "Bullish"
+latest_rsi = 48.23
+latest_atr = 3.75
+atr_threshold = 0.21
+latest_volume_confirmed = True
 
-def log_strategy_update(strategy_name, parameters):
-    """Log updates to trading strategy."""
-    log.info(
-        "Strategy updated",
-        strategy_name=strategy_name,
-        parameters=parameters,
-    )
-
-def log_risk_management(message):
-    """Log risk management events."""
-    log.warning("Risk management event", message=message)
-
-def log_backtest_results(strategy_name, performance_metrics):
-    """Log backtesting results."""
-    log.info(
-        "Backtest completed",
-        strategy_name=strategy_name,
-        performance_metrics=performance_metrics,
-    )
-
-# Example usage of structured logging
-if __name__ == "__main__":
-    log_trade_execution("buy", 100, 45.67, "successful")
-    log_trade_error("Insufficient funds for trade")
-    log_strategy_update("MACD Strategy", {"fast_length": 12, "slow_length": 26, "signal_length": 9})
-    log_risk_management("Stop loss triggered for BTC position")
-    log_backtest_results("RSI Strategy", {"sharpe_ratio": 1.5, "max_drawdown": -10.2})
+logger.info(
+    f"Skipping {Fore.CYAN}{ticker}{Style.RESET_ALL}: "
+    f"Trending Moving AVG:{Fore.GREEN if avg_trending else Fore.RED}{avg_trending}{Style.RESET_ALL} "
+    f"({Fore.YELLOW}{avg_trend_direction}{Style.RESET_ALL}), "
+    f"RSI:{Fore.MAGENTA}{latest_rsi:.2f}{Style.RESET_ALL}, "
+    f"ATR:{Fore.BLUE}{latest_atr:.2f}/{atr_threshold:.2f}{Style.RESET_ALL}, "
+    f"Volume:{Fore.GREEN if latest_volume_confirmed else Fore.RED}{latest_volume_confirmed}{Style.RESET_ALL}"
+)

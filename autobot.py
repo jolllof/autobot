@@ -1,11 +1,11 @@
 #TODO: finnhub basic financials could provide more details for stock's performance
-#TODO: track price changes likely in plots
 #TODO: add ADX calculations
-
+#TODO: https://trendspider.com/markets/congress-trading/
 
 import os
 from strategy import *
 from utilities import *
+from database import *
 from textbot import send_sms_via_email
 from datafetcher import *
 import structlog
@@ -20,12 +20,8 @@ def main():
 	#Configuration
 	end_date = datetime.today().date()
 	start_date = datetime.today().date() - timedelta(days=730)
-	logger.info(f'Date Range: {start_date} - {end_date}')
 	config_path = 'config.yaml'
 
-	#Robinhood
-	robinhoodstocks=load_from_config(config_path, 'robinhood_tickers')
-	fourstopstocks=load_from_config(config_path, 'fourstopstocks')
 
 	#FINNHUB Categorial Stock Search
 	stock_categories=load_from_config(config_path,'stock_categories')
@@ -44,13 +40,17 @@ def main():
 	trendingstocks=trending_tickers['symbol'].tolist()
 
 
+	configlists=['quantum', 'ai', 'robinhood']
 	#Run Moving AVG, ADX, ATR, RSI and Volume Based Filter
 	#run_analysis(trendingstocks, start_date, end_date)
 	#run_analysis(categoricalstocks, start_date, end_date)
-	run_analysis(robinhoodstocks, start_date, end_date, plot=True)
-	#run_analysis(fourstopstocks, start_date, end_date, plot=True)
+	#run_analysis(robinhoodstocks, start_date, end_date, plot=True)
 
-
+	for tickers in configlists:
+		logger.info(f"Analyzing: {tickers.upper()} Stocks For: {start_date} - {end_date}")
+		group=load_from_config(config_path, tickers)
+		db=run_analysis(group, start_date, end_date, plot=True)
+		process_data_files(tickers,end_date,db)
 
 
 	# send_sms_via_email(text_message)

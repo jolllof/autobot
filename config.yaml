@@ -13,7 +13,8 @@ yahoo_finance:
 stock_categories:
   - AI
   - TECH
-robinhood_tickers:
+
+robinhood:
   - AAPL
   - AI
   - AMD
@@ -30,10 +31,43 @@ robinhood_tickers:
   - PLUG
   - QCOM
   - RIOT
-  - SOUN
   - TEAM
   - TSLA
   - UBER
   - VGT
   - WKHS
   - IONQ
+
+
+quantum:
+ - RGTI
+ - IONQ
+ - QBTS
+ - QUBT
+ - QSI
+ - NVDA
+
+ai:
+ - SOUN
+ - AI
+ - BBAI
+
+tech:
+
+monitor:
+ - WDAY
+ - SE
+ - DDOG
+ - RBLX
+ - MCHP
+ - AMD
+ - AVGO
+ - NFLX
+ - ADBE
+ - INTU
+ - SHOP
+ - APP
+ - MRVL
+ - SPOT
+ - SMCI
+ 

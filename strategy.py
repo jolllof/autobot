@@ -1,4 +1,3 @@
-#TODO: get_indicators() is passing the same stock data from function to function, review to make sure that previous function is not altering stock data in a way that affects the next
 #TODO: Libraries like backtrader or pyalgotrade for backtesting
 
 from datafetcher import *
@@ -17,6 +16,10 @@ calc_config= {
 	"high_rsi": 70,
 	"relative_volume_threshold": 1.5
 }
+weakbuy=[]
+strongbuy=[]
+weaksell=[]
+strongsell=[]
 
 # Calculate Moving Averages
 def get_moving_averages(data, short_window=50, long_window=200):
@@ -118,32 +121,6 @@ def plot_indicators(data, ticker):
 	plt.tight_layout()
 	plt.show()
 
-# def plot_indicators(data, ticker):
-# 	plt.figure(figsize=(14, 9))
-
-# 	# Get the latest stock price
-# 	latest_close_price = data['Close'].iloc[-1].values.item()
-
-# 	# Plot Close Price and Moving Averages
-# 	plt.subplot(2, 1, 1)
-# 	plt.plot(data['Close'], label='Close Price', color='black', linewidth=1.2)
-# 	plt.plot(data['MA_Short'], label='20-Day MA', color='blue', linestyle='--')
-# 	plt.plot(data['MA_Long'], label='50-Day MA', color='orange', linestyle='--')
-# 	plt.title(f'{ticker} (${latest_close_price:.2f}) Moving Averages')
-# 	plt.legend()
-# 	plt.xticks(range(0, len(data), max(1, len(data) // 10)), data['Date_Label'][::max(1, len(data) // 10)], rotation=45)
-	
-# 	# Plot RSI
-# 	plt.subplot(2, 1, 2)
-# 	plt.plot(data['RSI'], label='RSI', color='purple')
-# 	plt.axhline(70, color='red', linestyle='--', linewidth=0.7)
-# 	plt.axhline(30, color='green', linestyle='--', linewidth=0.7)
-# 	plt.title('Relative Strength Index (RSI)')
-# 	plt.legend()
-# 	plt.tight_layout()
-# 	plt.show()
-
-
 def get_indicators(ticker, start_date, end_date):
 	logger.info(f"Getting Indicators for {ticker}")
 	
@@ -158,10 +135,27 @@ def get_indicators(ticker, start_date, end_date):
 	else:
 		return []
 
-def run_analysis(tickers, start_date, end_date, plot=False):
-	buystocks=[]
-	sellstocks=[]
+def printexecution(plot=False):
+	
+	def printloop(category, heading):
+		logger.info(heading.upper())
+		for stock in category:
+			print(stock)
+		print('\n')
 
+	#if weakbuy:
+	printloop(weakbuy, 'weakbuy')
+	#if strongbuy:
+	printloop(strongbuy, 'strongbuy')
+	#if weaksell:
+	printloop(weaksell, 'weaksell')
+	#if strongsell:
+	printloop(strongsell, 'strongsell')
+	
+
+
+def run_analysis(tickers, start_date, end_date, plot=False):
+	db=[]
 	for ticker in tickers:
 		try:
 			stock_data, ticker=get_indicators(ticker, start_date, end_date)
@@ -185,19 +179,25 @@ def run_analysis(tickers, start_date, end_date, plot=False):
 			#Volume Filter
 			latest_volume_confirmed = stock_data['Volume_Confirmed'].iloc[-1]
 
-			if rsi_is_low and avg_trending and avg_trend_direction == 'Bullish' and atr_above_threshold and latest_volume_confirmed:
-				buystocks.append(ticker)
-				if plot:
-					plot_indicators(stock_data, ticker)
-			elif rsi_is_high and avg_trending and avg_trend_direction == 'Bearish' and atr_above_threshold and latest_volume_confirmed:
-				sellstocks.append(ticker)
-				if plot:
-					plot_indicators(stock_data, ticker)
+			#Trade Logic
+			if rsi_is_low and avg_trending and avg_trend_direction == 'Bullish':
+				weakbuy.append[[ticker, stock_data, avg_trending, avg_trend_direction, latest_rsi, latest_atr]]
+				
+				if atr_above_threshold and latest_volume_confirmed:
+					strongbuy.append[[ticker, stock_data, avg_trending, avg_trend_direction, latest_rsi, latest_atr]]
+
+			elif rsi_is_high and avg_trending and avg_trend_direction == 'Bearish':
+				weaksell.append[[ticker, stock_data, avg_trending, avg_trend_direction, latest_rsi, latest_atr]]
+				
+				if atr_above_threshold and latest_volume_confirmed:
+					strongsell.append[[ticker, stock_data, avg_trending, avg_trend_direction, latest_rsi, latest_atr]]
 			else:
-				logger.info(f"Skipping {ticker}: Trending Moving AVG:{avg_trending}, RSI:{latest_rsi:.2f}, ATR:{latest_atr:.2f}/{atr_threshold:.2f}, Volume:{latest_volume_confirmed}\n")
-		#except ValueError:
+				logger.info(f"Skipping {ticker}: Trending Moving AVG:{avg_trending} ({avg_trend_direction}), RSI:{latest_rsi:.2f}, ATR:{latest_atr:.2f}/{atr_threshold:.2f}, Volume:{latest_volume_confirmed}\n")
+
 		except Exception as e:
 			logger.warn(f'{ticker} completely failed. skipping {e}')
+		db.append(stock_data)
+	return db
+	printexecution(plot)
+		
 
-
-	logger.info(f"SELL STOCKS: {' '.join(sellstocks)} \nBUY STOCKS: {' '.join(buystocks)}")

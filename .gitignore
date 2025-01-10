@@ -5,3 +5,6 @@
 __pycache__/
 __pycache__/autobot.cpython-312.pyc
 __pycache__/strategy.cpython-312.pyc
+
+
+analysis/
