@@ -2,8 +2,7 @@
 
 from datafetcher import *
 import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
+from   utilities import *
 import structlog
 
 logger = structlog.get_logger()
@@ -80,46 +79,12 @@ def get_atr(data):
 	
 	return data
 
-
 #Volume Based Filter
 def volumefilter(data):
 	relative_volume_threshold=calc_config['relative_volume_threshold']
 	data['Relative_Volume'] = data['Volume'] / data['Volume'].rolling(window=20).mean()
 	data['Volume_Confirmed'] = data['Relative_Volume'] > relative_volume_threshold
 	return data
-
-# Plot stock data with indicators
-def plot_indicators(data, ticker):
-	plt.figure(figsize=(14, 9))
-
-	#Get the latest stock price
-	latest_close_price = data['Close'].iloc[-1].values.item()
-
-	# Plot Close Price and Moving Averages
-	plt.subplot(3, 1, 1)
-	plt.plot(data['Close'], label='Close Price', color='black', linewidth=1.2)
-	plt.plot(data['MA_Short'], label='20-Day MA', color='blue', linestyle='--')
-	plt.plot(data['MA_Long'], label='50-Day MA', color='orange', linestyle='--')
-	plt.title(f'{ticker} ${latest_close_price:.2f} Moving Averages')
-	plt.legend()
-	
-	# Plot RSI
-	plt.subplot(3, 1, 2)
-	plt.plot(data['RSI'], label='RSI', color='purple')
-	plt.axhline(70, color='red', linestyle='--', linewidth=0.7)
-	plt.axhline(30, color='green', linestyle='--', linewidth=0.7)
-	plt.title('Relative Strength Index (RSI)')
-	plt.legend()
-
-	# Plot Price Changes (Percentage Change)
-	data['Price_Change'] = data['Close'].pct_change() * 100
-	plt.subplot(3, 1, 3)
-	plt.plot(data['Price_Change'], label='Price Change (%)', color='green')
-	plt.title('Price Change (%)')
-	plt.legend()
-
-	plt.tight_layout()
-	plt.show()
 
 def get_indicators(ticker, start_date, end_date):
 	logger.info(f"Getting Indicators for {ticker}")
@@ -143,17 +108,15 @@ def printexecution(plot=False):
 			print(stock)
 		print('\n')
 
-	#if weakbuy:
-	printloop(weakbuy, 'weakbuy')
-	#if strongbuy:
-	printloop(strongbuy, 'strongbuy')
-	#if weaksell:
-	printloop(weaksell, 'weaksell')
-	#if strongsell:
-	printloop(strongsell, 'strongsell')
+	if weakbuy:
+		printloop(weakbuy, 'weakbuy')
+	if strongbuy:
+		printloop(strongbuy, 'strongbuy')
+	if weaksell:
+		printloop(weaksell, 'weaksell')
+	if strongsell:
+		printloop(strongsell, 'strongsell')
 	
-
-
 def run_analysis(tickers, start_date, end_date, plot=False):
 	db=[]
 	for ticker in tickers:
@@ -182,22 +145,21 @@ def run_analysis(tickers, start_date, end_date, plot=False):
 			#Trade Logic
 			if rsi_is_low and avg_trending and avg_trend_direction == 'Bullish':
 				weakbuy.append[[ticker, stock_data, avg_trending, avg_trend_direction, latest_rsi, latest_atr]]
-				
 				if atr_above_threshold and latest_volume_confirmed:
 					strongbuy.append[[ticker, stock_data, avg_trending, avg_trend_direction, latest_rsi, latest_atr]]
+					plot_indicators(stock_data, ticker)
 
 			elif rsi_is_high and avg_trending and avg_trend_direction == 'Bearish':
 				weaksell.append[[ticker, stock_data, avg_trending, avg_trend_direction, latest_rsi, latest_atr]]
-				
 				if atr_above_threshold and latest_volume_confirmed:
 					strongsell.append[[ticker, stock_data, avg_trending, avg_trend_direction, latest_rsi, latest_atr]]
+					plot_indicators(stock_data, ticker)
 			else:
 				logger.info(f"Skipping {ticker}: Trending Moving AVG:{avg_trending} ({avg_trend_direction}), RSI:{latest_rsi:.2f}, ATR:{latest_atr:.2f}/{atr_threshold:.2f}, Volume:{latest_volume_confirmed}\n")
-
+				#plot_indicators(stock_data, ticker)
 		except Exception as e:
 			logger.warn(f'{ticker} completely failed. skipping {e}')
 		db.append(stock_data)
-	return db
+	
 	printexecution(plot)
-		
-
+	return db

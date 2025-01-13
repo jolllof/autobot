@@ -1,8 +1,8 @@
 import yaml
 import requests
 import structlog
+import matplotlib.pyplot as plt
 logger = structlog.get_logger()
-
 
 def load_from_config(config_path, values):
 	with open(config_path, 'r') as file:
@@ -55,3 +55,37 @@ def parse_collections(listofdicts, dict_name=''):
 		processedlist.append(primitive_values)
 
 	return processedlist
+
+# Plot stock data with indicators
+def plot_indicators(data, ticker):
+	plt.figure(figsize=(14, 9))
+
+	#Get the latest stock price
+	latest_close_price = data['Close'].iloc[-1].values.item()
+
+	# Plot Close Price and Moving Averages
+	plt.subplot(3, 1, 1)
+	plt.plot(data['Close'], label='Close Price', color='black', linewidth=1.2)
+	plt.plot(data['MA_Short'], label='20-Day MA', color='blue', linestyle='--')
+	plt.plot(data['MA_Long'], label='50-Day MA', color='orange', linestyle='--')
+	plt.title(f'{ticker} ${latest_close_price:.2f} Moving Averages')
+	plt.legend()
+	
+	# Plot RSI
+	plt.subplot(3, 1, 2)
+	plt.plot(data['RSI'], label='RSI', color='purple')
+	plt.axhline(70, color='red', linestyle='--', linewidth=0.7)
+	plt.axhline(30, color='green', linestyle='--', linewidth=0.7)
+	plt.title('Relative Strength Index (RSI)')
+	plt.legend()
+
+	# Plot Price Changes (Percentage Change)
+	data['Price_Change'] = data['Close'].pct_change() * 100
+	plt.subplot(3, 1, 3)
+	plt.plot(data['Price_Change'], label='Price Change (%)', color='green')
+	plt.plot(data['Close'], label='Actual Prices', color='blue')
+	plt.title('Price Change (%)')
+	plt.legend()
+
+	plt.tight_layout()
+	plt.show()
