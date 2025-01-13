@@ -1,4 +1,4 @@
-# Trend-Following Trading Bot
+# Autobot Trend-Following Trading Bot
 
 ## Overview
 The Trend-Following Trading Bot is designed to capitalize on market trends by employing technical analysis indicators. The bot is optimized for trading cryptocurrencies, AI stocks, and tech stocks, and operates using a combination of trend confirmation and volatility analysis techniques.
@@ -45,7 +45,7 @@ The bot employs a trend-following approach by combining multiple indicators to:
 ---
 
 ## Requirements
-- Python 3.8+
+- Python 3.11+
 - Libraries:
 - 'os'
 - 'yaml'
@@ -82,10 +82,11 @@ The bot employs a trend-following approach by combining multiple indicators to:
 ## Usage
 1. **Run the bot:**
    ```bash
-   python bot.py
+   Python autobot.py
    ```
 
 2. **Backtesting:**
+   - Not functioning at the moment
    - Use historical data to test strategies.
    - Example:
      ```bash
@@ -125,6 +126,7 @@ The bot employs a trend-following approach by combining multiple indicators to:
 - Add Mean-Reversion functionality for non-trending markets
 - Add DevOps functionalities: pre-config clean up, github actions AWS monitoring
 - Database/storage functionalities
+- Add Backtesting functionality
 
 ---
 
@@ -134,7 +136,7 @@ This project is licensed under the MIT License. See the `LICENSE` file for detai
 ---
 
 ## Support
-For questions or issues, feel free to open an issue on GitHub or contact Michael Hammond at jolllofcodes.com.
+For questions or issues, feel free to open an issue on GitHub or contact Michael Hammond at jolllofcodes@gmail.com.
 
 ---
 
