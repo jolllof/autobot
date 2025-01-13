@@ -134,7 +134,7 @@ This project is licensed under the MIT License. See the `LICENSE` file for detai
 ---
 
 ## Support
-For questions or issues, feel free to open an issue on GitHub or contact Michael Hammond at michael.hammond@example.com.
+For questions or issues, feel free to open an issue on GitHub or contact Michael Hammond at jolllofcodes.com.
 
 ---
 
