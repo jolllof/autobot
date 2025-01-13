@@ -82,10 +82,11 @@ The bot employs a trend-following approach by combining multiple indicators to:
 ## Usage
 1. **Run the bot:**
    ```bash
-   python bot.py
+   Python autobot.py
    ```
 
 2. **Backtesting:**
+   - Not functioning at the moment
    - Use historical data to test strategies.
    - Example:
      ```bash
@@ -125,6 +126,7 @@ The bot employs a trend-following approach by combining multiple indicators to:
 - Add Mean-Reversion functionality for non-trending markets
 - Add DevOps functionalities: pre-config clean up, github actions AWS monitoring
 - Database/storage functionalities
+- Add Backtesting functionality
 
 ---
 
