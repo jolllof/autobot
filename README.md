@@ -120,9 +120,11 @@ The bot employs a trend-following approach by combining multiple indicators to:
 ---
 
 ## Future Improvements
-- Add machine learning models for predictive analytics.
-- Optimize indicator thresholds based on market backtesting.
-- Expand support to other asset classes.
+- Add ADX calculations
+- Automate stock runs
+- Add Mean-Reversion functionality for non-trending markets
+- Add DevOps functionalities: pre-config clean up, github actions AWS monitoring
+- Database/storage functionalities
 
 ---
 
