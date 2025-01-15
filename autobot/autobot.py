@@ -14,7 +14,6 @@ import os
 from datetime import datetime, timedelta
 
 import structlog
-
 from database import *
 from datafetcher import *
 from strategy import *
@@ -31,7 +30,7 @@ def main():
     # Configuration
     end_date = datetime.today().date()
     start_date = datetime.today().date() - timedelta(days=730)
-    config_path = "config.yaml"
+    config_path = "config/config.yaml"
 
     # MANUAL LIST
     configlists = ["robinhood", "quantum", "ai", "monitor"]
