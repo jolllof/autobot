@@ -11,13 +11,15 @@
 	Run Moving AVG, ADX, ATR, RSI and Volume Based Filter and recommends buy and sell"""
 
 import os
-from strategy import *
-from utilities import *
-from database import *
-from textbot import send_sms_via_email
-from datafetcher import *
-import structlog
 from datetime import datetime, timedelta
+
+import structlog
+
+from database import *
+from datafetcher import *
+from strategy import *
+from textbot import send_sms_via_email
+from utilities import *
 
 logger = structlog.get_logger()
 os.system("clear")

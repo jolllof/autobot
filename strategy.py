@@ -1,9 +1,10 @@
 # TODO: Libraries like backtrader or pyalgotrade for backtesting
 
-from datafetcher import *
 import pandas as pd
-from utilities import *
 import structlog
+
+from datafetcher import *
+from utilities import *
 
 logger = structlog.get_logger()
 calc_config = {

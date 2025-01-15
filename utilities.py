@@ -1,7 +1,7 @@
-import yaml
+import matplotlib.pyplot as plt
 import requests
 import structlog
-import matplotlib.pyplot as plt
+import yaml
 
 logger = structlog.get_logger()
 

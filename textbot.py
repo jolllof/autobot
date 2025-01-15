@@ -1,6 +1,6 @@
+import os
 import smtplib
 from email.mime.text import MIMEText
-import os
 
 
 def send_sms_via_email(message, recipient="4342295810@txt.att.net"):

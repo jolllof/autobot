@@ -125,8 +125,6 @@ The bot employs a trend-following approach by combining multiple indicators to:
 Before committing code, ensure the following:
 
 1. Run `pre-commit run --all-files` to apply hooks.
-2. Run `make lint` and `make format` to ensure consistency.
-3. Ensure all tests pass with `make test`.
 
 ---
 
