@@ -142,4 +142,3 @@ For questions or issues, feel free to open an issue on GitHub or contact Michael
 
 ## Acknowledgments
 This bot was developed with a focus on simplicity and robustness, utilizing well-established technical indicators and strategies.
-

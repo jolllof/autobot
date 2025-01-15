@@ -4,7 +4,9 @@ from colorama import Fore, Style
 # Configure structlog
 structlog.configure(
     processors=[
-        structlog.processors.KeyValueRenderer(key_order=["event"]),  # Optional: Ensures "event" is first
+        structlog.processors.KeyValueRenderer(
+            key_order=["event"]
+        ),  # Optional: Ensures "event" is first
     ],
     context_class=dict,
     wrapper_class=structlog.make_filtering_bound_logger(10),

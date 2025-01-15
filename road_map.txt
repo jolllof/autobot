@@ -3,12 +3,12 @@
 * Evaluating 14 day periods for metrics
 * maintain a manual list of tickers based on news but also search categorically for outstanding stocks
 * anything on Robinhood or coinbase is prioritize for sell but also monitor for buy
-* PHASE 1: 
+* PHASE 1:
     Technical Analysis
-        Moving AVGs: Widely separated moving averages (e.g., 20 EMA and 50 EMA) suggest a trend., 
+        Moving AVGs: Widely separated moving averages (e.g., 20 EMA and 50 EMA) suggest a trend.,
         ATR to measure volatility (High ATR = trending potential; Low ATR = likely mean-reversion.)
         ADX  (> 25 signals a strong trend, while < 20 indicates a weak trend)
-        RSI (above 70 RSI means sell, under 30 RSI means buy) **ONLY use when confirmed by Moving AVGs 
+        RSI (above 70 RSI means sell, under 30 RSI means buy) **ONLY use when confirmed by Moving AVGs
         Volume-based filter to confirm breakouts/trend strength (Relative Volume > 1.5 often indicates strong participation)
     Fundamental Analysis:
         Low Price-to-Earnings (P/E): undervaluation compared to peers.
