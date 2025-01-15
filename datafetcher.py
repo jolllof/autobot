@@ -1,9 +1,11 @@
+import json
+
+import pandas as pd
 import requests
-from utilities import *
 import yfinance as yf
 from bs4 import BeautifulSoup
-import json
-import pandas as pd
+
+from utilities import *
 
 
 # FINNHUB
