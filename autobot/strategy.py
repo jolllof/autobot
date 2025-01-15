@@ -2,7 +2,6 @@
 
 import pandas as pd
 import structlog
-
 from datafetcher import *
 from utilities import *
 
