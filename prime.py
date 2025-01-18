@@ -13,6 +13,7 @@ import os
 from datetime import datetime, timedelta
 
 import structlog
+
 from database import *
 from datafetcher import *
 from strategy import *
@@ -41,15 +42,15 @@ def main():
     #     db = run_analysis(group, start_date, end_date, plot=False)
     #     process_data_files(tickers, end_date, db)
 
-    #FINNHUB Categorial Stock Search
-    stock_categories=load_from_config(config_path,'stock_categories')
-    finnhub_creds=load_from_config(config_path,'finnhub')
-    finnhub_base_url=finnhub_creds['base_url']
-    finnhub_api_key=os.getenv(finnhub_creds['api_key'])
+    # FINNHUB Categorial Stock Search
+    stock_categories = load_from_config(config_path, "stock_categories")
+    finnhub_creds = load_from_config(config_path, "finnhub")
+    finnhub_base_url = finnhub_creds["base_url"]
+    finnhub_api_key = os.getenv(finnhub_creds["api_key"])
 
-    symbols=get_all_stocks(finnhub_api_key, finnhub_base_url)
-    matches=get_stock_groups(symbols, stock_categories)
-    categoricalstocks=list(matches.keys())
+    symbols = get_all_stocks(finnhub_api_key, finnhub_base_url)
+    matches = get_stock_groups(symbols, stock_categories)
+    categoricalstocks = list(matches.keys())
     run_analysis(categoricalstocks, start_date, end_date)
 
     # #YAHOO Finance Trending
