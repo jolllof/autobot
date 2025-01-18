@@ -1,4 +1,3 @@
-# TODO: add ADX calculations
 # TODO: automate runs
 # TODO: define a proper output notification (email/txt for now)
 # TODO: Identify if market is trending at all or something else (mean reversion)
@@ -33,24 +32,25 @@ def main():
     config_path = "config/config.yaml"
 
     # MANUAL LIST
-    configlists = ["robinhood", "quantum", "ai", "monitor"]
-    for tickers in configlists:
-        logger.info(
-            f"Analyzing: {tickers.upper()} Stocks For: {start_date} - {end_date}"
-        )
-        group = load_from_config(config_path, tickers)
-        db = run_analysis(group, start_date, end_date, plot=False)
-        process_data_files(tickers, end_date, db)
+    # configlists = ["robinhood", "quantum", "ai", "monitor"]
+    # for tickers in configlists:
+    #     logger.info(
+    #         f"Analyzing: {tickers.upper()} Stocks For: {start_date} - {end_date}"
+    #     )
+    #     group = load_from_config(config_path, tickers)
+    #     db = run_analysis(group, start_date, end_date, plot=False)
+    #     process_data_files(tickers, end_date, db)
 
-    # #FINNHUB Categorial Stock Search
-    # stock_categories=load_from_config(config_path,'stock_categories')
-    # finnhub_creds=load_from_config(config_path,'finnhub')
-    # finnhub_base_url=finnhub_creds['base_url']
-    # finnhub_api_key=os.getenv(finnhub_creds['api_key'])
-    # symbols=get_all_stocks(finnhub_api_key, finnhub_base_url)
-    # matches=get_stock_groups(symbols, stock_categories)
-    # categoricalstocks=list(matches.keys())
-    # run_analysis(categoricalstocks, start_date, end_date)
+    #FINNHUB Categorial Stock Search
+    stock_categories=load_from_config(config_path,'stock_categories')
+    finnhub_creds=load_from_config(config_path,'finnhub')
+    finnhub_base_url=finnhub_creds['base_url']
+    finnhub_api_key=os.getenv(finnhub_creds['api_key'])
+
+    symbols=get_all_stocks(finnhub_api_key, finnhub_base_url)
+    matches=get_stock_groups(symbols, stock_categories)
+    categoricalstocks=list(matches.keys())
+    run_analysis(categoricalstocks, start_date, end_date)
 
     # #YAHOO Finance Trending
     # yahoo_finance_urls=load_from_config(config_path, 'yahoo_finance')

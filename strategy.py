@@ -208,7 +208,7 @@ def run_analysis(tickers, start_date, end_date, plot=False):
 
 
 			if  adx_is_strong and rsi_is_low and avg_trending and avg_trend_direction == "Bullish":
-				weakbuy.append[
+				weakbuy.append(
 					[
 						ticker,
 						stock_data,
@@ -217,9 +217,9 @@ def run_analysis(tickers, start_date, end_date, plot=False):
 						latest_rsi,
 						latest_atr,
 					]
-				]
+				)
 				if atr_above_threshold and latest_volume_confirmed and latest_plus_di > latest_minus_di:
-					strongbuy.append[
+					strongbuy.append(
 						[
 							ticker,
 							stock_data,
@@ -228,11 +228,11 @@ def run_analysis(tickers, start_date, end_date, plot=False):
 							latest_rsi,
 							latest_atr,
 						]
-					]
+					)
 					plot_indicators(stock_data, ticker)
 
 			elif adx_is_strong and rsi_is_high and avg_trending and avg_trend_direction == "Bearish":
-				weaksell.append[
+				weaksell.append(
 					[
 						ticker,
 						stock_data,
@@ -241,9 +241,9 @@ def run_analysis(tickers, start_date, end_date, plot=False):
 						latest_rsi,
 						latest_atr,
 					]
-				]
+				)
 				if atr_above_threshold and latest_volume_confirmed and latest_minus_di > latest_plus_di:
-					strongsell.append[
+					strongsell.append(
 						[
 							ticker,
 							stock_data,
@@ -252,7 +252,7 @@ def run_analysis(tickers, start_date, end_date, plot=False):
 							latest_rsi,
 							latest_atr,
 						]
-					]
+					)
 					plot_indicators(stock_data, ticker)
 			else:
 				logger.info(
