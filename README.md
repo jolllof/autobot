@@ -1,7 +1,7 @@
 # Autobot Trend-Following Trading Bot
 
 ## Overview
-The Trend-Following Trading Bot is designed to capitalize on market trends by employing technical analysis indicators. The bot is optimized for trading cryptocurrencies, AI stocks, and tech stocks, and operates using a combination of trend confirmation and volatility analysis techniques.
+The Autobot Trading Bot is designed to capitalize on market trends by employing technical analysis indicators. The bot is optimized for trading cryptocurrencies, AI stocks, and tech stocks, and operates using a combination of trend confirmation and volatility analysis techniques.
 
 This document outlines the bot's functionality, setup, and usage.
 
@@ -30,6 +30,10 @@ This document outlines the bot's functionality, setup, and usage.
 5. **Volume-Based Filter:**
    - Confirms breakouts or trend strength.
    - Relative Volume > 1.5 indicates strong market participation.
+
+6. **Average Directional Index:**
+   - Strong Directional Index > 25
+   - Weak Directional index < 20
 
 ### Supported Markets
 - Cryptocurrencies (e.g., Bitcoin, Ethereum)
@@ -64,7 +68,7 @@ The bot employs a trend-following approach by combining multiple indicators to:
 ## Installation
 1. Clone the repository:
    ```bash
-   git clone https://github.com/username/trend-following-bot.git
+   git clone https://github.com/username/autobot.git
    cd trend-following-bot
    ```
 
@@ -82,7 +86,7 @@ The bot employs a trend-following approach by combining multiple indicators to:
 ## Usage
 1. **Run the bot:**
    ```bash
-   Python autobot.py
+   Python prime.py
    ```
 
 2. **Backtesting:**
@@ -129,7 +133,6 @@ Before committing code, ensure the following:
 ---
 
 ## Future Improvements
-- Add ADX calculations
 - Automate stock runs
 - Add Mean-Reversion functionality for non-trending markets
 - Add DevOps functionalities: pre-config clean up, github actions AWS monitoring
