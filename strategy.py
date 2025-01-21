@@ -163,11 +163,13 @@ def printexecution(plot=False):
     def printloop(category, heading):
         logger.info(heading.upper())
         for stock in category:
-            print(stock)
+            print(stock[0], stock[1].iloc[-1])
+            # plot_indicators(stock[1], stock[0])
         print("\n")
 
     if weakbuy:
         printloop(weakbuy, "weakbuy")
+
     if strongbuy:
         printloop(strongbuy, "strongbuy")
     if weaksell:
@@ -239,7 +241,7 @@ def run_analysis(tickers, start_date, end_date, plot=False):
                             latest_atr,
                         ]
                     )
-                    plot_indicators(stock_data, ticker)
+                    # plot_indicators(stock_data, ticker)
 
             elif (
                 adx_is_strong
