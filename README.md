@@ -69,7 +69,7 @@ The bot employs a trend-following approach by combining multiple indicators to:
 1. Clone the repository:
    ```bash
    git clone https://github.com/username/autobot.git
-   cd trend-following-bot
+   cd autobot
    ```
 
 2. Install the dependencies:
