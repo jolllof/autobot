@@ -86,7 +86,7 @@ The bot employs a trend-following approach by combining multiple indicators to:
 ## Usage
 1. **Run the bot:**
    ```bash
-   Python prime.py
+   Python -m prime --set args_group=<manual_list|trending|categorical>
    ```
 
 2. **Backtesting:**

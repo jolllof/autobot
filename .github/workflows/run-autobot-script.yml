@@ -5,6 +5,9 @@ on:
     branches:
       - main
   workflow_dispatch: # Allows manual trigger from the Actions tab
+  schedule: # Schedule to run twice a day
+    - cron: "0 8 * * *" # Runs at 12:00 AM UTC
+    - cron: "0 12 * * *" # Runs at 12:00 PM UTC
 
 jobs:
   run-script:

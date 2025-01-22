@@ -48,9 +48,9 @@ quantum:
  - NVDA
 
 ai:
- - SOUN
  - AI
  - BBAI
+ - TEM
 
 
 monitor:
