@@ -1,10 +1,8 @@
-# TODO: automate runs
 # TODO: define a proper output notification (email/txt for now)
 # TODO: Identify if market is trending at all or something else (mean reversion)
 # TODO: add mean-reversion
 # TODO: https://trendspider.com/markets/congress-trading/
 # TODO: finnhub basic financials could provide more details for stock's performance
-# TODO: DevOps stuff: pre-config clean up, github actions
 
 """Autobot evaulates trending market to find stocks based on:
 	Run Moving AVG, ADX, ATR, RSI and Volume Based Filter and recommends buy and sell"""
