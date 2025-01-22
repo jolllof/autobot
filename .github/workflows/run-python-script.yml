@@ -25,4 +25,6 @@ jobs:
         pip install -r requirements.txt
 
     - name: Run AutoBot
+      env:
+          finnhub_api_key: ${{ secrets.finnhub_api_key }}
       run: python prime.py
