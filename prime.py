@@ -52,6 +52,14 @@ def main(args):
     except UnboundLocalError:
         pass
 
+    if args_group == "trending":
+        # YAHOO Finance Trending
+        yahoo_finance_urls = load_from_config(config_path, "yahoo_finance")
+        yahoo_trending_url = yahoo_finance_urls["trending_url"]
+        trending_tickers = fetch_trending_tickers(yahoo_trending_url)
+        trendingstocks = trending_tickers["symbol"].tolist()
+        run_analysis(trendingstocks, start_date, end_date)
+
     if args_group == "categorical":
         # FINNHUB Categorial Stock Search
         stock_categories = load_from_config(config_path, "stock_categories")
@@ -63,14 +71,6 @@ def main(args):
         matches = get_stock_groups(symbols, stock_categories)
         categoricalstocks = list(matches.keys())
         run_analysis(categoricalstocks, start_date, end_date)
-
-    if args_group == "trending":
-        # YAHOO Finance Trending
-        yahoo_finance_urls = load_from_config(config_path, "yahoo_finance")
-        yahoo_trending_url = yahoo_finance_urls["trending_url"]
-        trending_tickers = fetch_trending_tickers(yahoo_trending_url)
-        trendingstocks = trending_tickers["symbol"].tolist()
-        run_analysis(trendingstocks, start_date, end_date)
 
     # send_sms_via_email(text_message)
 
