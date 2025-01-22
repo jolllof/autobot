@@ -47,7 +47,7 @@ def main(args):
             )
             group = load_from_config(config_path, tickers)
             db = run_analysis(group, start_date, end_date, plot=False)
-            process_data_files(tickers, end_date, db)
+            # process_data_files(tickers, end_date, db)
 
     if args_group == "categorical":
         # FINNHUB Categorial Stock Search

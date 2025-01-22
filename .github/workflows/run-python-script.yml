@@ -27,3 +27,9 @@ jobs:
 
     - name: Run Robinhood Stocks
       run: python prime.py --set args_group='Robinhood'
+
+    - name: Run Finnhub AI and TECH Stocks
+      run: python prime.py --set args_group='categorical'
+
+    - name: Run Yahoo Trending Stocks
+      run: python prime.py --set args_group='trending'
