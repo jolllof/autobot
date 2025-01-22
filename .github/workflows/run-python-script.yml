@@ -1,4 +1,4 @@
-name: Run Python Script
+name: Run Trading Bot
 
 on:
   push:
@@ -17,12 +17,24 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.11' # Specify the Python version
+        python-version: '3.11'
 
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Run Python Script
-      run: python prime.py
+    - name: Run Robinhood Stocks
+      env:
+        finnhub_api_key: ${{ secrets.finnhub_api_key }}
+      run: python prime.py --set args_group='Robinhood'
+
+    - name: Run Finnhub AI and TECH Stocks
+      env:
+        finnhub_api_key: ${{ secrets.finnhub_api_key }}
+      run: python prime.py --set args_group='categorical'
+
+    - name: Run Yahoo Trending Stocks
+      env:
+        finnhub_api_key: ${{ secrets.finnhub_api_key }}
+      run: python prime.py --set args_group='trending'

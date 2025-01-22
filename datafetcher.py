@@ -13,7 +13,10 @@ def get_all_stocks(api_key, base_url):
     # Get all stock symbols available
     stock_symbols_url = f"{base_url}/stock/symbol?exchange=US&token={api_key}"
     results = get_data(stock_symbols_url)
-    return results.json()
+    try:
+        return results.json()
+    except Exception as e:
+        print(e, "\n\n", results)
 
 
 def get_stock_groups(symbols, keywords):
