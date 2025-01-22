@@ -40,14 +40,17 @@ def main(args):
     elif args_group == "manual_list":
         configlists = ["quantum", "ai", "monitor"]
 
-    if configlists:
-        for tickers in configlists:
-            logger.info(
-                f"Analyzing: {tickers.upper()} Stocks For: {start_date} - {end_date}"
-            )
-            group = load_from_config(config_path, tickers)
-            db = run_analysis(group, start_date, end_date, plot=False)
-            # process_data_files(tickers, end_date, db)
+    try:
+        if configlists:
+            for tickers in configlists:
+                logger.info(
+                    f"Analyzing: {tickers.upper()} Stocks For: {start_date} - {end_date}"
+                )
+                group = load_from_config(config_path, tickers)
+                db = run_analysis(group, start_date, end_date, plot=False)
+                # process_data_files(tickers, end_date, db)
+    except UnboundLocalError:
+        pass
 
     if args_group == "categorical":
         # FINNHUB Categorial Stock Search

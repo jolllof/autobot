@@ -5,8 +5,7 @@ on:
     branches:
       - main
   workflow_dispatch: # Allows manual trigger from the Actions tab
-env:
-    finnhub_api_key: ${{ secrets.finnhub_api_key }}
+
 jobs:
   run-script:
     runs-on: ubuntu-latest
@@ -26,10 +25,16 @@ jobs:
         pip install -r requirements.txt
 
     - name: Run Robinhood Stocks
+      env:
+        finnhub_api_key: ${{ secrets.finnhub_api_key }}
       run: python prime.py --set args_group='Robinhood'
 
     - name: Run Finnhub AI and TECH Stocks
+      env:
+        finnhub_api_key: ${{ secrets.finnhub_api_key }}
       run: python prime.py --set args_group='categorical'
 
     - name: Run Yahoo Trending Stocks
+      env:
+        finnhub_api_key: ${{ secrets.finnhub_api_key }}
       run: python prime.py --set args_group='trending'
