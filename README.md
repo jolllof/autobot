@@ -1,6 +1,6 @@
 # Autobot (Trend-Following) Trading Bot
 
-![Auto Trading Bot Logo](https://raw.githubusercontent.com/jolllof/autobot/refs/heads/jolllof-patch-2/autobot.webp)
+![Auto Trading Bot Logo](https://raw.githubusercontent.com/jolllof/autobot/refs/heads/main/autobot.webp)
 ## Overview
 The Autobot Trading Bot is designed to capitalize on market trends by employing technical analysis indicators. The bot is optimized for trading cryptocurrencies, AI stocks, and tech stocks, and operates using a combination of trend confirmation and volatility analysis techniques.
 
