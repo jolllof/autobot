@@ -25,7 +25,7 @@ logger = structlog.get_logger()
 os.system("clear")
 
 
-def main():
+def main(args):
     logger.info("Initiating Autobot")
     # Configuration
     end_date = datetime.today().date()
