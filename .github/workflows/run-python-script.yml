@@ -1,4 +1,4 @@
-name: Run Python Script
+name: Run Trading Bot
 
 on:
   push:
@@ -24,5 +24,5 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Run Python Script
+    - name: Run AutoBot
       run: python prime.py
