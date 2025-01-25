@@ -4,30 +4,37 @@ import robin_stocks.robinhood as r
 
 
 def login_to_robinhood():
-    # try:
-    # Fetch credentials from environment variables
     username = os.getenv("ROBINHOOD_USERNAME")
     password = os.getenv("ROBINHOOD_PASSWORD")
 
     if not username or not password:
         raise ValueError("Environment variables for username or password are not set.")
 
-    # Prompt for MFA code if needed
-    # mfa_code = input("Enter your 2FA code (if enabled): ")
-
-    # Login to Robinhood
-    login = r.authentication.login(
-        username=username,
-        password=password,
-        expiresIn=86400,  # Session duration in seconds
-        store_session=True,
-        # mfa_code=mfa_code
-    )
-    print("Login successful!")
-    return login
-    # except Exception as e:
-    #     print(f"Login failed: {e} - {login}")
-    #     return None
+    # Attempt to login without MFA code first
+    try:
+        login = r.authentication.login(
+            username=username,
+            password=password,
+            expiresIn=86400,  # Session duration in seconds
+            store_session=True,
+        )
+        print("Login successful!")
+        return login
+    except r.exceptions.TwoFactorRequired as e:
+        # Prompt for MFA code if needed
+        mfa_code = input("Enter your 2FA code: ")
+        login = r.authentication.login(
+            username=username,
+            password=password,
+            expiresIn=86400,  # Session duration in seconds
+            store_session=True,
+            mfa_code=mfa_code,
+        )
+        print("Login successful with MFA!")
+        return login
+    except Exception as e:
+        print(f"Login failed: {e}")
+        return None
 
 
 # Step 2: Get Account Details

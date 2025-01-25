@@ -15,6 +15,11 @@ stock_categories:
   - TECH
 
 robinhood:
+  - BTC
+  - DOGE
+  - ETH
+  - XRP
+  - SOL
   - AAPL
   - AI
   - AMD
@@ -36,7 +41,7 @@ robinhood:
   - UBER
   - VGT
   - WKHS
-  - IONQ
+  - VST
 
 
 quantum:
@@ -59,7 +64,6 @@ monitor:
  - DDOG
  - RBLX
  - MCHP
- - AMD
  - AVGO
  - NFLX
  - ADBE
