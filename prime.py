@@ -82,7 +82,7 @@ if __name__ == "__main__":
         help="""
 			Arguments need to be passed in the form of --set key1=val1 key2=val2 etc...
 			Example Arguments:
-			--set stockgroup="robinhood"
+			--set args_group="robinhood"
 		""",
     )
     args = parser.parse_args()
