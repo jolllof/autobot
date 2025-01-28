@@ -183,6 +183,7 @@ def run_analysis(tickers, start_date, end_date, plot=False):
     for ticker in tickers:
         try:
             stock_data, ticker = get_indicators(ticker, start_date, end_date)
+            print(stock_data)
 
             # Moving AVG Trend
             avg_trend_stats = avg_is_trending(stock_data)
@@ -201,15 +202,11 @@ def run_analysis(tickers, start_date, end_date, plot=False):
             atr_above_threshold = latest_atr > atr_threshold
 
             # ADX (tug of war strength pull on both sides)
-            try:
-                latest_adx = stock_data["ADX"].iloc[-1]
-                adx_is_strong = latest_adx > calc_config["strong_adx"]
-                adx_is_weak = latest_adx < calc_config["weak_adx"]
-                latest_plus_di = stock_data["+DI"].iloc[-1]
-                latest_minus_di = stock_data["-DI"].iloc[-1]
-            except Exception as e:
-                logger.warn(f"ADX failed: {e}")
-                print(stock_data)
+            latest_adx = stock_data["ADX"].iloc[-1]
+            adx_is_strong = latest_adx > calc_config["strong_adx"]
+            adx_is_weak = latest_adx < calc_config["weak_adx"]
+            latest_plus_di = stock_data["+DI"].iloc[-1]
+            latest_minus_di = stock_data["-DI"].iloc[-1]
 
             # Volume Filter
             latest_volume_confirmed = stock_data["Volume_Confirmed"].iloc[-1]
