@@ -30,6 +30,7 @@ def get_moving_averages(data, short_window=50, long_window=200):
     result = data.copy()
     result["MA_Short"] = result["Close"].rolling(window=short_window).mean()
     result["MA_Long"] = result["Close"].rolling(window=long_window).mean()
+    print(f"MA_Short: {result['MA_Short'].iloc[-1]}")
     return result
 
 
@@ -69,6 +70,7 @@ def get_rsi(data):
     loss = (-delta.where(delta < 0, 0)).rolling(window=window).mean()
     rs = gain / loss
     data["RSI"] = 100 - (100 / (1 + rs))
+    print(f"RSI: {data['RSI'].iloc[-1]}")
     return data
 
 
@@ -86,7 +88,7 @@ def get_atr(data):
 
     # Calculate ATR as the moving average of True Range
     data["ATR"] = true_range.rolling(window=window).mean()
-
+    print(f"ATR: {data['ATR'].iloc[-1]}")
     return data
 
 
@@ -95,6 +97,7 @@ def volumefilter(data):
     relative_volume_threshold = calc_config["relative_volume_threshold"]
     data["Relative_Volume"] = data["Volume"] / data["Volume"].rolling(window=20).mean()
     data["Volume_Confirmed"] = data["Relative_Volume"] > relative_volume_threshold
+    print(f"Volume_Confirmed: {data['Volume_Confirmed'].iloc[-1]}")
     return data
 
 
@@ -138,7 +141,7 @@ def get_adx(data):
     data["+DI"] = plus_di
     data["-DI"] = minus_di
     data["ADX"] = adx
-
+    print(f"ADX: {data['ADX'].iloc[-1]}")
     return data
 
 
@@ -146,7 +149,7 @@ def get_indicators(ticker, start_date, end_date):
     logger.info(f"Getting Indicators for {ticker}")
 
     stock_data = get_stock_data(ticker, start_date, end_date)
-    print(stock_data)
+
     if not stock_data.empty:
         stock_data = get_moving_averages(stock_data)
         stock_data = get_rsi(stock_data)
@@ -183,7 +186,6 @@ def run_analysis(tickers, start_date, end_date, plot=False):
     for ticker in tickers:
         try:
             stock_data, ticker = get_indicators(ticker, start_date, end_date)
-            print(stock_data)
 
             # Moving AVG Trend
             avg_trend_stats = avg_is_trending(stock_data)
