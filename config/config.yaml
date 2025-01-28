@@ -15,11 +15,6 @@ stock_categories:
   - TECH
 
 robinhood:
-  - BTC
-  - DOGE
-  - ETH
-  - XRP
-  - SOL
   - AAPL
   - AI
   - AMD
