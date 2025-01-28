@@ -30,7 +30,6 @@ def get_moving_averages(data, short_window=50, long_window=200):
     result = data.copy()
     result["MA_Short"] = result["Close"].rolling(window=short_window).mean()
     result["MA_Long"] = result["Close"].rolling(window=long_window).mean()
-    print(f"MA_Short: {result['MA_Short'].iloc[-1]}")
     return result
 
 
@@ -70,7 +69,6 @@ def get_rsi(data):
     loss = (-delta.where(delta < 0, 0)).rolling(window=window).mean()
     rs = gain / loss
     data["RSI"] = 100 - (100 / (1 + rs))
-    print(f"RSI: {data['RSI'].iloc[-1]}")
     return data
 
 
@@ -88,7 +86,6 @@ def get_atr(data):
 
     # Calculate ATR as the moving average of True Range
     data["ATR"] = true_range.rolling(window=window).mean()
-    print(f"ATR: {data['ATR'].iloc[-1]}")
     return data
 
 
@@ -97,7 +94,6 @@ def volumefilter(data):
     relative_volume_threshold = calc_config["relative_volume_threshold"]
     data["Relative_Volume"] = data["Volume"] / data["Volume"].rolling(window=20).mean()
     data["Volume_Confirmed"] = data["Relative_Volume"] > relative_volume_threshold
-    print(f"Volume_Confirmed: {data['Volume_Confirmed'].iloc[-1]}")
     return data
 
 
@@ -111,6 +107,13 @@ def get_adx(data):
     # Calculate +DM and -DM
     plus_dm = high.diff().clip(lower=0)
     minus_dm = (-low.diff()).clip(lower=0)
+    try:
+        print(
+            f"High: {high.iloc[-1]}, Low: {low.iloc[-1]}, Close: {close.iloc[-1]}, Plus_DM: {plus_dm.iloc[-1]}, Minus_DM: {minus_dm.iloc[-1]}"
+        )
+    except Exception as e:
+        logger.warn(f"get_adx failed: {e}")
+        print(f"High: {high.iloc[-1]}, Low: {low.iloc[-1]}, Close: {close.iloc[-1]}")
 
     # Eliminate crossovers
     plus_dm[plus_dm < minus_dm] = 0
@@ -141,13 +144,11 @@ def get_adx(data):
     plus_di = plus_di.fillna(0)
     minus_di = minus_di.fillna(0)
     adx = adx.fillna(0)
-    print(f"PLUS_DI: {plus_di.iloc[-1]}, MINUS_DI: {minus_di.iloc[-1]}")
 
     # Add results to the DataFrame
     data["+DI"] = plus_di
     data["-DI"] = minus_di
     data["ADX"] = adx
-    print(f"ADX: {data['ADX'].iloc[-1]}")
     return data
 
 
@@ -292,4 +293,3 @@ def run_analysis(tickers, start_date, end_date, plot=False):
         except Exception as e:
             logger.warn(f"{ticker} completely failed. skipping {e}")
     printexecution(plot)
-    return db
