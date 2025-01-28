@@ -137,6 +137,12 @@ def get_adx(data):
     # Calculate ADX (Average Directional Index)
     adx = dx.rolling(window=window).mean()
 
+    # Ensure the lengths of the columns are consistent
+    plus_di = plus_di.fillna(0)
+    minus_di = minus_di.fillna(0)
+    adx = adx.fillna(0)
+    print(f"PLUS_DI: {plus_di.iloc[-1]}, MINUS_DI: {minus_di.iloc[-1]}")
+
     # Add results to the DataFrame
     data["+DI"] = plus_di
     data["-DI"] = minus_di
