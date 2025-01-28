@@ -146,6 +146,7 @@ def get_indicators(ticker, start_date, end_date):
     logger.info(f"Getting Indicators for {ticker}")
 
     stock_data = get_stock_data(ticker, start_date, end_date)
+    print(stock_data)
     if not stock_data.empty:
         stock_data = get_moving_averages(stock_data)
         stock_data = get_rsi(stock_data)
@@ -179,7 +180,6 @@ def printexecution(plot=False):
 
 
 def run_analysis(tickers, start_date, end_date, plot=False):
-    db = []
     for ticker in tickers:
         try:
             stock_data, ticker = get_indicators(ticker, start_date, end_date)
@@ -283,7 +283,5 @@ def run_analysis(tickers, start_date, end_date, plot=False):
                 # plot_indicators(stock_data, ticker)
         except Exception as e:
             logger.warn(f"{ticker} completely failed. skipping {e}")
-        db.append(stock_data)
-
     printexecution(plot)
     return db
