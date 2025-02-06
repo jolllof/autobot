@@ -229,7 +229,7 @@ def run_analysis(tickers, start_date, end_date, plot=False):
                 if (
                     atr_above_threshold
                     and latest_volume_confirmed
-                    and latest_plus_di > latest_minus_di
+                    #and latest_plus_di > latest_minus_di
                 ):
                     strongbuy.append(
                         [
