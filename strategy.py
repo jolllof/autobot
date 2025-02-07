@@ -55,6 +55,7 @@ def avg_is_trending(data):
         return {
             "is_trending": data["Is_Trending"].iloc[-1],
             "trend_direction": data["Trend_Direction"].iloc[-1],
+            "trend_strength_mean": data["Trend_Strength"].abs().mean() > trend_threshold
         }
     except IndexError:
         logger.warn(f" avg_is_trending failed: \n{data}")
@@ -70,7 +71,6 @@ def get_rsi(data):
     rs = gain / loss
     data["RSI"] = 100 - (100 / (1 + rs))
     return data
-
 
 # Calculate Average True Range
 def get_atr(data):
@@ -89,7 +89,6 @@ def get_atr(data):
 
     return data
 
-
 # Volume Based Filter
 def volumefilter(data):
     relative_volume_threshold = calc_config["relative_volume_threshold"]
@@ -97,7 +96,7 @@ def volumefilter(data):
     data["Volume_Confirmed"] = data["Relative_Volume"] > relative_volume_threshold
     return data
 
-
+#Average Directional Index
 def get_adx(data):
 
     window = calc_config["adx_window"]
@@ -141,7 +140,6 @@ def get_adx(data):
 
     return data
 
-
 def get_indicators(ticker, start_date, end_date):
     logger.info(f"Getting Indicators for {ticker}")
 
@@ -153,10 +151,12 @@ def get_indicators(ticker, start_date, end_date):
         #stock_data = get_adx(stock_data)
         stock_data = volumefilter(stock_data)
 
+        res=determine_market_type(stock_data)
+        logger.info(f"Market Type: {res}")
+
         return stock_data, ticker
     else:
         return []
-
 
 def printexecution(plot=False):
 
@@ -177,6 +177,17 @@ def printexecution(plot=False):
     if strongsell:
         printloop(strongsell, "strongsell")
 
+def determine_market_type(data):
+    data = get_moving_averages(data)
+    trendstrengthmean= avg_is_trending(data)['trend_strength_mean']
+    if trendstrengthmean:
+        return "Trending Market"
+    elif data["Close"].std() < calc_config["atr_quantile"]:
+        return "Calm Market"
+    elif data["Close"].std() > calc_config["atr_quantile"]:
+        return "Volatile Market"
+    else:
+        return "Sideways Market"
 
 def run_analysis(tickers, start_date, end_date, plot=False):
     for ticker in tickers:
