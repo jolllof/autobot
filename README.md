@@ -134,11 +134,10 @@ Before committing code, ensure the following:
 ---
 
 ## Future Improvements
-- Automate stock runs
 - Add Mean-Reversion functionality for non-trending markets
-- Add DevOps functionalities: pre-config clean up, github actions AWS monitoring
 - Database/storage functionalities
 - Add Backtesting functionality
+- Add a Sentiment Score using `vaderSentiment`
 
 ---
 
