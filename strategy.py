@@ -2,6 +2,7 @@
 
 import pandas as pd
 import structlog
+import sys
 
 from datafetcher import *
 from utilities import *
@@ -23,7 +24,6 @@ weakbuy = []
 strongbuy = []
 weaksell = []
 strongsell = []
-
 
 # Calculate Moving Averages
 def get_moving_averages(data, short_window=50, long_window=200):
@@ -143,19 +143,24 @@ def get_indicators(ticker, start_date, end_date):
     logger.info(f"Getting Indicators for {ticker}")
 
     stock_data = get_stock_data(ticker, start_date, end_date)
-    if not stock_data.empty:
-        stock_data = get_moving_averages(stock_data)
-        stock_data = get_rsi(stock_data)
-        stock_data = get_atr(stock_data)
-        #stock_data = get_adx(stock_data)
-        stock_data = volumefilter(stock_data)
+    try:
+        if not stock_data.empty:
+            stock_data = get_moving_averages(stock_data)
+            stock_data = get_rsi(stock_data)
+            stock_data = get_atr(stock_data)
+            #stock_data = get_adx(stock_data)
+            stock_data = volumefilter(stock_data)
 
-        res=determine_market_type(stock_data)
-        logger.info(f"Market Type: {res}")
+            res=determine_market_type(stock_data)
+            logger.info(f"Market Type: {res}")
 
-        return stock_data, ticker
-    else:
-        return []
+            return stock_data, ticker
+        else:
+            return []
+    except Exception as e:
+        logger.warn(f"Failed to get indicators for {ticker}: {e}")
+        sys.exit()
+
 
 def printexecution(plot=False):
 
