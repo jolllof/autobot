@@ -142,7 +142,7 @@ def get_indicators(ticker, start_date, end_date):
     logger.info(f"Getting Indicators for {ticker}")
 
     stock_data = get_stock_data(ticker, start_date, end_date)
-    if not stock_data.empty:
+    if isinstance(stock_data, pd.DataFrame) and not stock_data.empty:
         try:
             stock_data = get_moving_averages(stock_data)
             stock_data = get_rsi(stock_data)
