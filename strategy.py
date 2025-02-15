@@ -182,11 +182,12 @@ def printexecution(plot=False):
 def determine_market_type(data):
     data = get_moving_averages(data)
     trendstrengthmean= avg_is_trending(data)['trend_strength_mean']
+    x=input(f"{data['Close'].std()} {calc_config['atr_quantile']}")
     if trendstrengthmean:
         return "Trending Market"
-    elif data["Close"].std() < calc_config["atr_quantile"].iloc[0]:
+    elif data["Close"].std() < calc_config["atr_quantile"]:
         return "Calm Market"
-    elif data["Close"].std() > calc_config["atr_quantile"].iloc[0]:
+    elif data["Close"].std() > calc_config["atr_quantile"]:
         return "Volatile Market"
     else:
         return "Sideways Market"
