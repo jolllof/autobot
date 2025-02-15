@@ -193,22 +193,28 @@ def run_analysis(tickers, start_date, end_date, plot=False):
     for ticker in tickers:
         try:
             stock_data, ticker = get_indicators(ticker, start_date, end_date)
-
+            logger.debug(f"Analyzing {stock_data}\n")
             # Moving AVG Trend
             avg_trend_stats = avg_is_trending(stock_data)
             avg_trending = avg_trend_stats["is_trending"]
             avg_trend_direction = avg_trend_stats["trend_direction"]
+
+            logger.debug(f"Analyzing Trending Moving AVG:{avg_trending} ({avg_trend_direction})\n")
 
             # RSI
             latest_rsi = stock_data["RSI"].iloc[-1]
             rsi_is_low = latest_rsi < calc_config["low_rsi"]
             rsi_is_high = latest_rsi > calc_config["high_rsi"]
 
+            logger.debug(f"Analyzing RSI:{latest_rsi:.2f}, {rsi_is_high}, {rsi_is_low} \n")
+
             # ATR (tug of war how much the rope goes back and forth)
             latest_atr = stock_data["ATR"].iloc[-1]
             atr_quantile = calc_config["atr_quantile"]
             atr_threshold = stock_data["ATR"].quantile(atr_quantile)
             atr_above_threshold = latest_atr > atr_threshold
+
+            logger.debug(f"Analyzing ATR:{latest_atr:.2f}/{atr_threshold:.2f}, {atr_above_threshold} \n")
 
             # # ADX (tug of war strength pull on both sides)
             # latest_adx = stock_data["ADX"].iloc[-1]
@@ -219,6 +225,8 @@ def run_analysis(tickers, start_date, end_date, plot=False):
 
             # Volume Filter
             latest_volume_confirmed = stock_data["Volume_Confirmed"].iloc[-1]
+
+            logger.debug(f"Analyzing Volume:{latest_volume_confirmed}\n")
 
             if (
                 rsi_is_low
