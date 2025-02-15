@@ -31,17 +31,17 @@ jobs:
         finnhub_api_key: ${{ secrets.finnhub_api_key }}
       run: python prime.py --set args_group='Robinhood'
 
-    # - name: Run Manual List
-    #   env:
-    #     finnhub_api_key: ${{ secrets.finnhub_api_key }}
-    #   run: python prime.py --set args_group='manual_list'
+    - name: Run Manual List
+      env:
+        finnhub_api_key: ${{ secrets.finnhub_api_key }}
+      run: python prime.py --set args_group='manual_list'
 
-    # - name: Run Yahoo Trending Stocks
-    #   env:
-    #     finnhub_api_key: ${{ secrets.finnhub_api_key }}
-    #   run: python prime.py --set args_group='trending'
+    - name: Run Yahoo Trending Stocks
+      env:
+        finnhub_api_key: ${{ secrets.finnhub_api_key }}
+      run: python prime.py --set args_group='trending'
 
-    # - name: Run Finnhub AI and TECH Stocks
-    #   env:
-    #     finnhub_api_key: ${{ secrets.finnhub_api_key }}
-    #   run: python prime.py --set args_group='categorical'
+    - name: Run Finnhub AI and TECH Stocks
+      env:
+        finnhub_api_key: ${{ secrets.finnhub_api_key }}
+      run: python prime.py --set args_group='categorical'
