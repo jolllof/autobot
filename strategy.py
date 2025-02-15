@@ -2,6 +2,7 @@
 
 import pandas as pd
 import structlog
+import sys
 
 from datafetcher import *
 from utilities import *
@@ -23,8 +24,6 @@ weakbuy = []
 strongbuy = []
 weaksell = []
 strongsell = []
-
-
 # Calculate Moving Averages
 def get_moving_averages(data, short_window=50, long_window=200):
     result = data.copy()
@@ -59,7 +58,6 @@ def avg_is_trending(data):
         }
     except IndexError:
         logger.warn(f" avg_is_trending failed: \n{data}")
-
 
 # Calculate RSI
 def get_rsi(data):
@@ -144,7 +142,8 @@ def get_indicators(ticker, start_date, end_date):
     logger.info(f"Getting Indicators for {ticker}")
 
     stock_data = get_stock_data(ticker, start_date, end_date)
-    if not stock_data.empty:
+    if isinstance(stock_data, pd.DataFrame) and not stock_data.empty:
+
         stock_data = get_moving_averages(stock_data)
         stock_data = get_rsi(stock_data)
         stock_data = get_atr(stock_data)
@@ -155,8 +154,11 @@ def get_indicators(ticker, start_date, end_date):
         logger.info(f"Market Type: {res}")
 
         return stock_data, ticker
+
     else:
-        return []
+        logger.error(f"Stock Data is Empty for {ticker}")
+        sys.exit()
+
 
 def printexecution(plot=False):
 
@@ -182,52 +184,68 @@ def determine_market_type(data):
     trendstrengthmean= avg_is_trending(data)['trend_strength_mean']
     if trendstrengthmean:
         return "Trending Market"
-    elif data["Close"].std() < calc_config["atr_quantile"]:
+    elif data["Close"].squeeze().std() < calc_config["atr_quantile"]:
         return "Calm Market"
-    elif data["Close"].std() > calc_config["atr_quantile"]:
+    elif data["Close"].squeeze().std() > calc_config["atr_quantile"]:
         return "Volatile Market"
     else:
         return "Sideways Market"
 
 def run_analysis(tickers, start_date, end_date, plot=False):
     for ticker in tickers:
-        try:
-            stock_data, ticker = get_indicators(ticker, start_date, end_date)
+        # try:
+        stock_data, ticker = get_indicators(ticker, start_date, end_date)
+        # Moving AVG Trend
+        avg_trend_stats = avg_is_trending(stock_data)
+        avg_trending = avg_trend_stats["is_trending"]
+        avg_trend_direction = avg_trend_stats["trend_direction"]
 
-            # Moving AVG Trend
-            avg_trend_stats = avg_is_trending(stock_data)
-            avg_trending = avg_trend_stats["is_trending"]
-            avg_trend_direction = avg_trend_stats["trend_direction"]
+        # RSI
+        latest_rsi = stock_data["RSI"].iloc[-1]
+        rsi_is_low = latest_rsi < calc_config["low_rsi"]
+        rsi_is_high = latest_rsi > calc_config["high_rsi"]
 
-            # RSI
-            latest_rsi = stock_data["RSI"].iloc[-1]
-            rsi_is_low = latest_rsi < calc_config["low_rsi"]
-            rsi_is_high = latest_rsi > calc_config["high_rsi"]
+        # ATR (tug of war how much the rope goes back and forth)
+        latest_atr = stock_data["ATR"].iloc[-1]
+        atr_quantile = calc_config["atr_quantile"]
+        atr_threshold = stock_data["ATR"].quantile(atr_quantile)
+        atr_above_threshold = latest_atr > atr_threshold
 
-            # ATR (tug of war how much the rope goes back and forth)
-            latest_atr = stock_data["ATR"].iloc[-1]
-            atr_quantile = calc_config["atr_quantile"]
-            atr_threshold = stock_data["ATR"].quantile(atr_quantile)
-            atr_above_threshold = latest_atr > atr_threshold
+        # # ADX (tug of war strength pull on both sides)
+        # latest_adx = stock_data["ADX"].iloc[-1]
+        # adx_is_strong = latest_adx > calc_config["strong_adx"]
+        # adx_is_weak = latest_adx < calc_config["weak_adx"]
+        # latest_plus_di = stock_data["+DI"].iloc[-1]
+        # latest_minus_di = stock_data["-DI"].iloc[-1]
 
-            # # ADX (tug of war strength pull on both sides)
-            # latest_adx = stock_data["ADX"].iloc[-1]
-            # adx_is_strong = latest_adx > calc_config["strong_adx"]
-            # adx_is_weak = latest_adx < calc_config["weak_adx"]
-            # latest_plus_di = stock_data["+DI"].iloc[-1]
-            # latest_minus_di = stock_data["-DI"].iloc[-1]
+        # Volume Filter
+        latest_volume_confirmed = stock_data["Volume_Confirmed"].iloc[-1]
 
-            # Volume Filter
-            latest_volume_confirmed = stock_data["Volume_Confirmed"].iloc[-1]
-
+        # except Exception as e:
+        #     logger.warn(f"{ticker} completely failed. skipping {e}")
+        if (
+            rsi_is_low
+            and avg_trending
+            and avg_trend_direction == "Bullish"
+            #and adx_is_strong
+            
+        ):
+            weakbuy.append(
+                [
+                    ticker,
+                    stock_data,
+                    avg_trending,
+                    avg_trend_direction,
+                    latest_rsi,
+                    latest_atr,
+                ]
+            )
             if (
-                rsi_is_low
-                and avg_trending
-                and avg_trend_direction == "Bullish"
-                #and adx_is_strong
-                
+                atr_above_threshold
+                and latest_volume_confirmed
+                #and latest_plus_di > latest_minus_di
             ):
-                weakbuy.append(
+                strongbuy.append(
                     [
                         ticker,
                         stock_data,
@@ -236,62 +254,46 @@ def run_analysis(tickers, start_date, end_date, plot=False):
                         latest_rsi,
                         latest_atr,
                     ]
-                )
-                if (
-                    atr_above_threshold
-                    and latest_volume_confirmed
-                    #and latest_plus_di > latest_minus_di
-                ):
-                    strongbuy.append(
-                        [
-                            ticker,
-                            stock_data,
-                            avg_trending,
-                            avg_trend_direction,
-                            latest_rsi,
-                            latest_atr,
-                        ]
-                    )
-                    # plot_indicators(stock_data, ticker)
-
-            elif (
-                rsi_is_high
-                and avg_trending
-                and avg_trend_direction == "Bearish"
-                #and adx_is_strong
-                
-            ):
-                weaksell.append(
-                    [
-                        ticker,
-                        stock_data,
-                        avg_trending,
-                        avg_trend_direction,
-                        latest_rsi,
-                        latest_atr,
-                    ]
-                )
-                if (
-                    atr_above_threshold
-                    and latest_volume_confirmed
-                    #and latest_minus_di > latest_plus_di
-                ):
-                    strongsell.append(
-                        [
-                            ticker,
-                            stock_data,
-                            avg_trending,
-                            avg_trend_direction,
-                            latest_rsi,
-                            latest_atr,
-                        ]
-                    )
-                    plot_indicators(stock_data, ticker)
-            else:
-                logger.info(
-                    f"Skipping {ticker}: Trending Moving AVG:{avg_trending} ({avg_trend_direction}), RSI:{latest_rsi:.2f}, ATR:{latest_atr:.2f}/{atr_threshold:.2f}, Volume:{latest_volume_confirmed}\n"
                 )
                 # plot_indicators(stock_data, ticker)
-        except Exception as e:
-            logger.warn(f"{ticker} completely failed. skipping {e}")
+
+        elif (
+            rsi_is_high
+            and avg_trending
+            and avg_trend_direction == "Bearish"
+            #and adx_is_strong
+            
+        ):
+            weaksell.append(
+                [
+                    ticker,
+                    stock_data,
+                    avg_trending,
+                    avg_trend_direction,
+                    latest_rsi,
+                    latest_atr,
+                ]
+            )
+            if (
+                atr_above_threshold
+                and latest_volume_confirmed
+                #and latest_minus_di > latest_plus_di
+            ):
+                strongsell.append(
+                    [
+                        ticker,
+                        stock_data,
+                        avg_trending,
+                        avg_trend_direction,
+                        latest_rsi,
+                        latest_atr,
+                    ]
+                )
+                plot_indicators(stock_data, ticker)
+        else:
+            logger.info(
+                f"Skipping {ticker}: Trending Moving AVG:{avg_trending} ({avg_trend_direction}), RSI:{latest_rsi:.2f}, ATR:{latest_atr:.2f}/{atr_threshold:.2f}, Volume:{latest_volume_confirmed}\n"
+            )
+            # plot_indicators(stock_data, ticker)
+        
     printexecution(plot)
