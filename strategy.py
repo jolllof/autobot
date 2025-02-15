@@ -24,7 +24,7 @@ weakbuy = []
 strongbuy = []
 weaksell = []
 strongsell = []
-
+ƒ
 # Calculate Moving Averages
 def get_moving_averages(data, short_window=50, long_window=200):
     result = data.copy()
@@ -143,8 +143,8 @@ def get_indicators(ticker, start_date, end_date):
     logger.info(f"Getting Indicators for {ticker}")
 
     stock_data = get_stock_data(ticker, start_date, end_date)
-    try:
-        if not stock_data.empty:
+    if not stock_data.empty:
+        try:
             stock_data = get_moving_averages(stock_data)
             stock_data = get_rsi(stock_data)
             stock_data = get_atr(stock_data)
@@ -155,10 +155,11 @@ def get_indicators(ticker, start_date, end_date):
             logger.info(f"Market Type: {res}")
 
             return stock_data, ticker
-        else:
-            return []
-    except Exception as e:
-        logger.warn(f"Failed to get indicators for {ticker}: {e}")
+        except Exception as e:
+            logger.error(f"Failed to get indicators for {ticker}: {e}")
+    else:
+        return []
+
         sys.exit()
 
 
@@ -197,7 +198,6 @@ def run_analysis(tickers, start_date, end_date, plot=False):
     for ticker in tickers:
         try:
             stock_data, ticker = get_indicators(ticker, start_date, end_date)
-            logger.debug(f"Analyzing {stock_data}\n")
             # Moving AVG Trend
             avg_trend_stats = avg_is_trending(stock_data)
             avg_trending = avg_trend_stats["is_trending"]
