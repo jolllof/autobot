@@ -133,9 +133,9 @@ def get_adx(data):
     adx = dx.rolling(window=window).mean()
 
     # Add results to the DataFrame
-    data["+DI"] = plus_di.iloc[:, 0]
-    data["-DI"] = minus_di.iloc[:, 0]
-    data["ADX"] = adx.iloc[:, 0]
+    data["+DI"] = plus_di.iloc[-1]
+    data["-DI"] = minus_di.iloc[-1]
+    data["ADX"] = adx.iloc[-1]
 
     return data
 
@@ -292,7 +292,7 @@ def run_analysis(tickers, start_date, end_date, plot=False):
                 plot_indicators(stock_data, ticker)
         else:
             logger.info(
-                f"Skipping {ticker}: Trending Moving AVG:{avg_trending} ({avg_trend_direction}), RSI:{latest_rsi:.2f}, ATR:{latest_atr:.2f}/{atr_threshold:.2f}, Volume:{latest_volume_confirmed}\n"
+                f"Skipping {ticker}: Moving AVG:{avg_trending} ({avg_trend_direction}), RSI:{latest_rsi:.2f}, ATR:{latest_atr:.2f}/{atr_threshold:.2f}, Volume:{latest_volume_confirmed}, ADX Strong:{adx_is_strong}\n"
             )
             # plot_indicators(stock_data, ticker)
         
