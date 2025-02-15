@@ -133,8 +133,8 @@ def get_adx(data):
     adx = dx.rolling(window=window).mean()
 
     # Add results to the DataFrame
-    data["+DI"] = plus_di
-    data["-DI"] = minus_di
+    data["+DI"] = plus_di.iloc[:, 0]
+    data["-DI"] = minus_di.iloc[:, 0]
     data["ADX"] = adx
 
     return data
