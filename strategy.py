@@ -189,9 +189,7 @@ def determine_market_type(data):
         return "Sideways Market"
 
 def run_analysis(tickers, start_date, end_date, plot=False):
-    print('step 1')
     for ticker in tickers:
-        print(ticker)
         try:
             stock_data, ticker = get_indicators(ticker, start_date, end_date)
             logger.debug(f"Analyzing {stock_data}\n")
