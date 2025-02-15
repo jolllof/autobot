@@ -60,7 +60,6 @@ def avg_is_trending(data):
     except IndexError:
         logger.warn(f" avg_is_trending failed: \n{data}")
 
-
 # Calculate RSI
 def get_rsi(data):
 
@@ -190,7 +189,9 @@ def determine_market_type(data):
         return "Sideways Market"
 
 def run_analysis(tickers, start_date, end_date, plot=False):
+    print('step 1')
     for ticker in tickers:
+        print(ticker)
         try:
             stock_data, ticker = get_indicators(ticker, start_date, end_date)
             logger.debug(f"Analyzing {stock_data}\n")
@@ -227,9 +228,8 @@ def run_analysis(tickers, start_date, end_date, plot=False):
             latest_volume_confirmed = stock_data["Volume_Confirmed"].iloc[-1]
 
             logger.debug(f"Analyzing Volume:{latest_volume_confirmed}\n")
-
-            
-
+        except Exception as e:
+            logger.warn(f"{ticker} completely failed. skipping {e}")
             if (
                 rsi_is_low
                 and avg_trending
@@ -302,6 +302,5 @@ def run_analysis(tickers, start_date, end_date, plot=False):
                     f"Skipping {ticker}: Trending Moving AVG:{avg_trending} ({avg_trend_direction}), RSI:{latest_rsi:.2f}, ATR:{latest_atr:.2f}/{atr_threshold:.2f}, Volume:{latest_volume_confirmed}\n"
                 )
                 # plot_indicators(stock_data, ticker)
-        except Exception as e:
-            logger.warn(f"{ticker} completely failed. skipping {e}")
+        
     printexecution(plot)
