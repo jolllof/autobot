@@ -45,7 +45,7 @@ def main(args):
                     f"Analyzing: {tickers.upper()} Stocks For: {start_date} - {end_date}"
                 )
                 group = load_from_config(config_path, tickers)
-                db = run_analysis(group, start_date, end_date, plot=False)
+                run_analysis(group, start_date, end_date)
                 # process_data_files(tickers, end_date, db)
     except UnboundLocalError:
         pass

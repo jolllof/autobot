@@ -151,9 +151,6 @@ def get_indicators(ticker, start_date, end_date):
         stock_data = get_adx(stock_data)
         stock_data = volumefilter(stock_data)
 
-        res=determine_market_type(stock_data)
-        logger.info(f"Market Type: {res}")
-
         return stock_data, ticker
 
     else:
@@ -192,10 +189,9 @@ def determine_market_type(data):
     else:
         return "Sideways Market"
 
-def run_analysis(tickers, start_date, end_date, plot=False):
-    for ticker in tickers:
-        # try:
-        stock_data, ticker = get_indicators(ticker, start_date, end_date)
+
+def trending_market_strategy(stock_data, ticker):
+    
         # Moving AVG Trend
         avg_trend_stats = avg_is_trending(stock_data)
         avg_trending = avg_trend_stats["is_trending"]
@@ -294,6 +290,22 @@ def run_analysis(tickers, start_date, end_date, plot=False):
             logger.info(
                 f"Skipping {ticker}: Moving AVG:{avg_trending} ({avg_trend_direction}), RSI:{latest_rsi:.2f}, ATR:{latest_atr:.2f}/{atr_threshold:.2f}, Volume:{latest_volume_confirmed}, ADX Strong:{adx_is_strong}\n"
             )
+
+def mean_reversion_strategy(data, ticker):
+    pass
+
+def run_analysis(tickers, start_date, end_date, plot=False):
+    for ticker in tickers:
+        # try:
+        stock_data, ticker = get_indicators(ticker, start_date, end_date)
+        market_type=determine_market_type(stock_data)
+        logger.info(f"Market Type: {market_type}")
+
+        if market_type=='Trending Market':
+            trending_market_strategy(stock_data, ticker)
+        elif market_type=='Sideways Market':
+            mean_reversion_strategy(stock_data, ticker)
+
             # plot_indicators(stock_data, ticker)
         
     printexecution(plot)

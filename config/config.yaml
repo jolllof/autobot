@@ -13,23 +13,19 @@ yahoo_finance:
 stock_categories:
   - AI
   - TECH
-
 robinhood:
   - BTC
   - ETH
   - SOL
   - AAPL
-  - AI
   - AMD
   - ARTY
-  - BBAI
   - BOTZ
   - DIS
   - JMIA
   - MDB
   - MSFT
   - NEUE
-  - NVDA
   - PLTR
   - PLUG
   - QCOM
@@ -41,33 +37,28 @@ robinhood:
   - WKHS
   - VST
 
-
 quantum:
- - RGTI
- - IONQ
- - QBTS
- - QUBT
- - QSI
- - NVDA
+  - RGTI
+  - IONQ
+  - QBTS
+  - QUBT
+  - QSI
 
 ai:
- - AI
- - BBAI
- - TEM
-
+  - TEM
 
 monitor:
- - WDAY
- - SE
- - DDOG
- - RBLX
- - MCHP
- - AVGO
- - NFLX
- - ADBE
- - INTU
- - SHOP
- - APP
- - MRVL
- - SPOT
- - SMCI
+  - WDAY
+  - SE
+  - DDOG
+  - RBLX
+  - MCHP
+  - AVGO
+  - NFLX
+  - ADBE
+  - INTU
+  - SHOP
+  - APP
+  - MRVL
+  - SPOT
+  - SMCI
