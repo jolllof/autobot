@@ -218,16 +218,6 @@ def run_analysis(tickers, start_date, end_date, plot=False):
         # latest_plus_di = stock_data["+DI"].iloc[-1]
         # latest_minus_di = stock_data["-DI"].iloc[-1]
             # ADX (tug of war strength pull on both sides)
-            try:
-                latest_adx = stock_data["ADX"].iloc[-1]
-                adx_is_strong = latest_adx > calc_config["strong_adx"]
-                adx_is_weak = latest_adx < calc_config["weak_adx"]
-                latest_plus_di = stock_data["+DI"].iloc[-1]
-                latest_minus_di = stock_data["-DI"].iloc[-1]
-            except Exception as e:
-                logger.warn(f"Skipping {ticker}: ADX failed {e}")
-                print(stock_data)
-                continue
 
         # Volume Filter
         latest_volume_confirmed = stock_data["Volume_Confirmed"].iloc[-1]
