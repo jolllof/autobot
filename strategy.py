@@ -24,6 +24,7 @@ weakbuy = []
 strongbuy = []
 weaksell = []
 strongsell = []
+
 # Calculate Moving Averages
 def get_moving_averages(data, short_window=50, long_window=200):
     result = data.copy()
@@ -132,9 +133,9 @@ def get_adx(data):
     adx = dx.rolling(window=window).mean()
 
     # Add results to the DataFrame
-    data["+DI"] = plus_di
-    data["-DI"] = minus_di
-    data["ADX"] = adx
+    data["+DI"] = plus_di.iloc[-1]
+    data["-DI"] = minus_di.iloc[-1]
+    data["ADX"] = adx.iloc[-1]
 
     return data
 
@@ -147,18 +148,14 @@ def get_indicators(ticker, start_date, end_date):
         stock_data = get_moving_averages(stock_data)
         stock_data = get_rsi(stock_data)
         stock_data = get_atr(stock_data)
-        #stock_data = get_adx(stock_data)
+        stock_data = get_adx(stock_data)
         stock_data = volumefilter(stock_data)
-
-        res=determine_market_type(stock_data)
-        logger.info(f"Market Type: {res}")
 
         return stock_data, ticker
 
     else:
         logger.error(f"Stock Data is Empty for {ticker}")
         sys.exit()
-
 
 def printexecution(plot=False):
 
@@ -180,6 +177,7 @@ def printexecution(plot=False):
         printloop(strongsell, "strongsell")
 
 def determine_market_type(data):
+    #Determines if market is trending or something else
     data = get_moving_averages(data)
     trendstrengthmean= avg_is_trending(data)['trend_strength_mean']
     if trendstrengthmean:
@@ -191,10 +189,9 @@ def determine_market_type(data):
     else:
         return "Sideways Market"
 
-def run_analysis(tickers, start_date, end_date, plot=False):
-    for ticker in tickers:
-        # try:
-        stock_data, ticker = get_indicators(ticker, start_date, end_date)
+
+def trending_market_strategy(stock_data, ticker):
+    
         # Moving AVG Trend
         avg_trend_stats = avg_is_trending(stock_data)
         avg_trending = avg_trend_stats["is_trending"]
@@ -211,23 +208,22 @@ def run_analysis(tickers, start_date, end_date, plot=False):
         atr_threshold = stock_data["ATR"].quantile(atr_quantile)
         atr_above_threshold = latest_atr > atr_threshold
 
-        # # ADX (tug of war strength pull on both sides)
-        # latest_adx = stock_data["ADX"].iloc[-1]
-        # adx_is_strong = latest_adx > calc_config["strong_adx"]
-        # adx_is_weak = latest_adx < calc_config["weak_adx"]
-        # latest_plus_di = stock_data["+DI"].iloc[-1]
-        # latest_minus_di = stock_data["-DI"].iloc[-1]
+        # ADX (tug of war strength pull on both sides)
+        latest_adx = stock_data["ADX"].iloc[-1]
+        adx_is_strong = latest_adx > calc_config["strong_adx"]
+        adx_is_weak = latest_adx < calc_config["weak_adx"]
+        latest_plus_di = stock_data["+DI"].iloc[-1]
+        latest_minus_di = stock_data["-DI"].iloc[-1]
 
         # Volume Filter
         latest_volume_confirmed = stock_data["Volume_Confirmed"].iloc[-1]
 
-        # except Exception as e:
-        #     logger.warn(f"{ticker} completely failed. skipping {e}")
+
         if (
             rsi_is_low
             and avg_trending
             and avg_trend_direction == "Bullish"
-            #and adx_is_strong
+            and adx_is_strong
             
         ):
             weakbuy.append(
@@ -243,7 +239,7 @@ def run_analysis(tickers, start_date, end_date, plot=False):
             if (
                 atr_above_threshold
                 and latest_volume_confirmed
-                #and latest_plus_di > latest_minus_di
+                and latest_plus_di > latest_minus_di
             ):
                 strongbuy.append(
                     [
@@ -261,7 +257,7 @@ def run_analysis(tickers, start_date, end_date, plot=False):
             rsi_is_high
             and avg_trending
             and avg_trend_direction == "Bearish"
-            #and adx_is_strong
+            and adx_is_strong
             
         ):
             weaksell.append(
@@ -277,7 +273,7 @@ def run_analysis(tickers, start_date, end_date, plot=False):
             if (
                 atr_above_threshold
                 and latest_volume_confirmed
-                #and latest_minus_di > latest_plus_di
+                and latest_minus_di > latest_plus_di
             ):
                 strongsell.append(
                     [
@@ -292,8 +288,24 @@ def run_analysis(tickers, start_date, end_date, plot=False):
                 plot_indicators(stock_data, ticker)
         else:
             logger.info(
-                f"Skipping {ticker}: Trending Moving AVG:{avg_trending} ({avg_trend_direction}), RSI:{latest_rsi:.2f}, ATR:{latest_atr:.2f}/{atr_threshold:.2f}, Volume:{latest_volume_confirmed}\n"
+                f"Skipping {ticker}: Moving AVG:{avg_trending} ({avg_trend_direction}), RSI:{latest_rsi:.2f}, ATR:{latest_atr:.2f}/{atr_threshold:.2f}, Volume:{latest_volume_confirmed}, ADX Strong:{adx_is_strong}\n"
             )
+
+def mean_reversion_strategy(data, ticker):
+    pass
+
+def run_analysis(tickers, start_date, end_date, plot=False):
+    for ticker in tickers:
+        # try:
+        stock_data, ticker = get_indicators(ticker, start_date, end_date)
+        market_type=determine_market_type(stock_data)
+        logger.info(f"Market Type: {market_type}")
+
+        if market_type=='Trending Market':
+            trending_market_strategy(stock_data, ticker)
+        elif market_type=='Sideways Market':
+            mean_reversion_strategy(stock_data, ticker)
+
             # plot_indicators(stock_data, ticker)
         
     printexecution(plot)
