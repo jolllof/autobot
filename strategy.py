@@ -135,7 +135,7 @@ def get_adx(data):
     # Add results to the DataFrame
     data["+DI"] = plus_di.iloc[:, 0]
     data["-DI"] = minus_di.iloc[:, 0]
-    data["ADX"] = adx
+    data["ADX"] = adx.iloc[:, 0]
 
     return data
 
