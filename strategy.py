@@ -24,7 +24,6 @@ weakbuy = []
 strongbuy = []
 weaksell = []
 strongsell = []
-ƒ
 # Calculate Moving Averages
 def get_moving_averages(data, short_window=50, long_window=200):
     result = data.copy()
@@ -158,8 +157,7 @@ def get_indicators(ticker, start_date, end_date):
         except Exception as e:
             logger.error(f"Failed to get indicators for {ticker}: {e}")
     else:
-        return []
-
+        logger.error(f"Stock Data is Empty for {ticker}")
         sys.exit()
 
 
