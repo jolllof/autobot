@@ -228,6 +228,8 @@ def run_analysis(tickers, start_date, end_date, plot=False):
 
             logger.debug(f"Analyzing Volume:{latest_volume_confirmed}\n")
 
+            
+
             if (
                 rsi_is_low
                 and avg_trending
