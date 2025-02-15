@@ -143,19 +143,18 @@ def get_indicators(ticker, start_date, end_date):
 
     stock_data = get_stock_data(ticker, start_date, end_date)
     if isinstance(stock_data, pd.DataFrame) and not stock_data.empty:
-        try:
-            stock_data = get_moving_averages(stock_data)
-            stock_data = get_rsi(stock_data)
-            stock_data = get_atr(stock_data)
-            #stock_data = get_adx(stock_data)
-            stock_data = volumefilter(stock_data)
 
-            res=determine_market_type(stock_data)
-            logger.info(f"Market Type: {res}")
+        stock_data = get_moving_averages(stock_data)
+        stock_data = get_rsi(stock_data)
+        stock_data = get_atr(stock_data)
+        #stock_data = get_adx(stock_data)
+        stock_data = volumefilter(stock_data)
 
-            return stock_data, ticker
-        except Exception as e:
-            logger.error(f"Failed to get indicators for {ticker}: {e}")
+        res=determine_market_type(stock_data)
+        logger.info(f"Market Type: {res}")
+
+        return stock_data, ticker
+
     else:
         logger.error(f"Stock Data is Empty for {ticker}")
         sys.exit()
