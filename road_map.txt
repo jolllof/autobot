@@ -34,27 +34,36 @@ PHASE 2:
 
 
 
+Based on the market classification in your determine_market_type function, here’s the ideal trading strategy for each market condition:
 
-#Trend-Following Bot
+Trending Market
 
-Why?
-Simple to implement using basic indicators like moving averages, RSI, or MACD.
-Doesn't require constant intervention.
-How It Works: The bot identifies trends in the market and takes positions accordingly. For example, buying when a short-term moving average crosses above a long-term one.
-Considerations:
-Works best in trending markets.
-Test and optimize with historical data to avoid false signals.
+Strategy: Trend-following
+Indicators to Use: Moving Averages (e.g., 20 EMA & 50 EMA), ADX (>25 for strong trend), RSI (confirmation for overbought/oversold).
+Entry: Buy when short-term MA crosses above long-term MA (golden cross) or sell when it crosses below (death cross).
+Exit: Take profits at key resistance/support levels or when ADX weakens.
+Stop Loss: Below recent swing low (for long) or above recent swing high (for short).
+Calm Market
 
+Strategy: Mean-reversion (Range Trading)
+Indicators to Use: Bollinger Bands, RSI, ATR (low volatility confirmation).
+Entry: Buy near lower Bollinger Band and sell near the upper band.
+Exit: Exit at the opposite band or a predefined profit target.
+Stop Loss: Slightly below/above range support/resistance.
+Volatile Market
 
-#Mean Reversion Bot
+Strategy: Breakout Trading
+Indicators to Use: ATR (high volatility confirmation), Relative Volume (>1.5), Bollinger Bands (widening bands).
+Entry: Enter on breakouts of key resistance (buy) or support (sell) with high volume.
+Exit: Use ATR-based stop loss and trailing stops to capture trends.
+Stop Loss: ATR-based stop or recent consolidation level.
+Sideways Market
 
-Why?
-Suitable for range-bound assets with a history of reverting to the mean.
-Easy to program using statistical measures (e.g., Bollinger Bands).
-How It Works: The bot buys when prices drop below a predefined range and sells when they return to the average.
-Considerations:
-Best for stable, non-volatile markets.
-Requires less frequent monitoring but regular strategy validation.
+Strategy: Mean-reversion or Short-Term Scalping
+Indicators to Use: RSI (overbought/oversold), Stochastic Oscillator, Bollinger Bands.
+Entry: Buy near support, sell near resistance; use RSI divergence for confirmation.
+Exit: Exit at opposite range level or with tight trailing stops.
+Stop Loss: Just outside the range boundary.
 
 
 
@@ -69,10 +78,6 @@ APIS:
 yfinance for specific stock data
 finnhub for all stocks and their categories
 robinhood to keep track of my pre-existing investments in context to autobot
-
-
-
-
 
 
 
