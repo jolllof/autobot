@@ -1,4 +1,5 @@
 # TODO: Libraries like backtrader or pyalgotrade for backtesting
+# TODO: add logic for mean reversion strategy
 
 import pandas as pd
 import structlog

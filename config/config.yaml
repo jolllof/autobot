@@ -48,7 +48,7 @@ ai:
   - TEM
 
 monitor:
-  - WDAY
+  - AVGO
   - SE
   - DDOG
   - RBLX
