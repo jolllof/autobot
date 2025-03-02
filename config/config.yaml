@@ -48,7 +48,7 @@ ai:
   - TEM
 
 monitor:
-  - WDAY
+  - AVGO
   - SE
   - DDOG
   - RBLX
@@ -62,3 +62,8 @@ monitor:
   - MRVL
   - SPOT
   - SMCI
+  - BNZI
+  - KULR
+  - GNLX
+  - PAYS
+  - SOFI

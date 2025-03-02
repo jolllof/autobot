@@ -1,4 +1,5 @@
 # TODO: Libraries like backtrader or pyalgotrade for backtesting
+# TODO: add logic for mean reversion strategy
 
 import pandas as pd
 import structlog
@@ -189,7 +190,6 @@ def determine_market_type(data):
     else:
         return "Sideways Market"
 
-
 def trending_market_strategy(stock_data, ticker):
     
         # Moving AVG Trend
@@ -220,11 +220,7 @@ def trending_market_strategy(stock_data, ticker):
 
 
         if (
-            rsi_is_low
-            and avg_trending
-            and avg_trend_direction == "Bullish"
-            and adx_is_strong
-            
+            rsi_is_low and avg_trending and avg_trend_direction == "Bullish" and adx_is_strong   
         ):
             weakbuy.append(
                 [
@@ -236,10 +232,8 @@ def trending_market_strategy(stock_data, ticker):
                     latest_atr,
                 ]
             )
-            if (
-                atr_above_threshold
-                and latest_volume_confirmed
-                and latest_plus_di > latest_minus_di
+            if ( 
+                atr_above_threshold and latest_volume_confirmed and latest_plus_di > latest_minus_di
             ):
                 strongbuy.append(
                     [
@@ -254,10 +248,7 @@ def trending_market_strategy(stock_data, ticker):
                 # plot_indicators(stock_data, ticker)
 
         elif (
-            rsi_is_high
-            and avg_trending
-            and avg_trend_direction == "Bearish"
-            and adx_is_strong
+            rsi_is_high and avg_trending and avg_trend_direction == "Bearish" and adx_is_strong
             
         ):
             weaksell.append(
@@ -271,9 +262,7 @@ def trending_market_strategy(stock_data, ticker):
                 ]
             )
             if (
-                atr_above_threshold
-                and latest_volume_confirmed
-                and latest_minus_di > latest_plus_di
+                atr_above_threshold and latest_volume_confirmed and latest_minus_di > latest_plus_di
             ):
                 strongsell.append(
                     [
@@ -301,11 +290,17 @@ def run_analysis(tickers, start_date, end_date, plot=False):
         market_type=determine_market_type(stock_data)
         logger.info(f"Market Type: {market_type}")
 
+        plot_indicators(stock_data, ticker)
+        
         if market_type=='Trending Market':
             trending_market_strategy(stock_data, ticker)
         elif market_type=='Sideways Market':
             mean_reversion_strategy(stock_data, ticker)
+        elif market_type=='Volatile Market':
+            pass
+        elif market_type=='Calm Market':
+            pass
 
-            # plot_indicators(stock_data, ticker)
+           
         
     printexecution(plot)
