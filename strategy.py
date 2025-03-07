@@ -184,8 +184,10 @@ def determine_market_type(data):
     if trendstrengthmean:
         return "Trending Market"
     elif data["Close"].squeeze().std() < calc_config["atr_quantile"]:
+        logger.info(f"Market Data: {data["Close"].squeeze().std()} < {calc_config["atr_quantile"]}")
         return "Calm Market"
     elif data["Close"].squeeze().std() > calc_config["atr_quantile"]:
+        logger.info(f"Market Data: {data["Close"].squeeze().std()} > {calc_config["atr_quantile"]}")
         return "Volatile Market"
     else:
         return "Sideways Market"

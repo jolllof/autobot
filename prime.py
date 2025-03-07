@@ -22,7 +22,6 @@ from utilities import *
 logger = structlog.get_logger()
 os.system("clear")
 
-
 def main(args):
     logger.info("Initiating Autobot")
     # Configuration
