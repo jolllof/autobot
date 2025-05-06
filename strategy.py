@@ -9,7 +9,7 @@ from datafetcher import *
 from utilities import *
 
 logger = structlog.get_logger()
-calc_config = {
+old_calc_config = {
     "rsi_window": 14,
     "atr_window": 14,
     "adx_window": 14,
@@ -19,6 +19,20 @@ calc_config = {
     "high_rsi": 70,
     "strong_adx": 25,
     "weak_adx": 20,
+    "relative_volume_threshold": 1.5,
+}
+
+
+calc_config = {
+    "rsi_window": 10,
+    "atr_window": 7,
+    "adx_window": 10,
+    "atr_quantile": 0.65,
+    "trend_threshold": 0.05,
+    "low_rsi": 40,
+    "high_rsi": 60,
+    "strong_adx": 20,
+    "weak_adx": 15,
     "relative_volume_threshold": 1.5,
 }
 weakbuy = []
@@ -184,8 +198,10 @@ def determine_market_type(data):
     if trendstrengthmean:
         return "Trending Market"
     elif data["Close"].squeeze().std() < calc_config["atr_quantile"]:
+        logger.info(f"Market Data: {data["Close"].squeeze().std()} < {calc_config["atr_quantile"]}")
         return "Calm Market"
     elif data["Close"].squeeze().std() > calc_config["atr_quantile"]:
+        logger.info(f"Market Data: {data["Close"].squeeze().std()} > {calc_config["atr_quantile"]}")
         return "Volatile Market"
     else:
         return "Sideways Market"
@@ -274,7 +290,7 @@ def trending_market_strategy(stock_data, ticker):
                         latest_atr,
                     ]
                 )
-                plot_indicators(stock_data, ticker)
+                #plot_indicators(stock_data, ticker)
         else:
             logger.info(
                 f"Skipping {ticker}: Moving AVG:{avg_trending} ({avg_trend_direction}), RSI:{latest_rsi:.2f}, ATR:{latest_atr:.2f}/{atr_threshold:.2f}, Volume:{latest_volume_confirmed}, ADX Strong:{adx_is_strong}\n"
@@ -290,16 +306,16 @@ def run_analysis(tickers, start_date, end_date, plot=False):
         market_type=determine_market_type(stock_data)
         logger.info(f"Market Type: {market_type}")
 
-        plot_indicators(stock_data, ticker)
-        
-        if market_type=='Trending Market':
-            trending_market_strategy(stock_data, ticker)
-        elif market_type=='Sideways Market':
-            mean_reversion_strategy(stock_data, ticker)
-        elif market_type=='Volatile Market':
-            pass
-        elif market_type=='Calm Market':
-            pass
+        #plot_indicators(stock_data, ticker)
+        trending_market_strategy(stock_data, ticker)
+        # if market_type=='Trending Market':
+        #     trending_market_strategy(stock_data, ticker)
+        # elif market_type=='Sideways Market':
+        #     mean_reversion_strategy(stock_data, ticker)
+        # elif market_type=='Volatile Market':
+        #     pass
+        # elif market_type=='Calm Market':
+        #     pass
 
            
         
