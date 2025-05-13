@@ -9,18 +9,19 @@ from datafetcher import *
 from utilities import *
 
 logger = structlog.get_logger()
-old_calc_config = {
-    "rsi_window": 14,
-    "atr_window": 14,
-    "adx_window": 14,
-    "atr_quantile": 0.75,
-    "trend_threshold": 0.1,
-    "low_rsi": 30,
-    "high_rsi": 70,
-    "strong_adx": 25,
-    "weak_adx": 20,
-    "relative_volume_threshold": 1.5,
-}
+
+# old_calc_config = {
+#     "rsi_window": 14,
+#     "atr_window": 14,
+#     "adx_window": 14,
+#     "atr_quantile": 0.75,
+#     "trend_threshold": 0.1,
+#     "low_rsi": 30,
+#     "high_rsi": 70,
+#     "strong_adx": 25,
+#     "weak_adx": 20,
+#     "relative_volume_threshold": 1.5,
+# }
 
 
 calc_config = {
