@@ -5,7 +5,7 @@
 # TODO: finnhub basic financials could provide more details for stock's performance
 
 """Autobot evaulates trending market to find stocks based on:
-	Run Moving AVG, ADX, ATR, RSI and Volume Based Filter and recommends buy and sell"""
+Run Moving AVG, ADX, ATR, RSI and Volume Based Filter and recommends buy and sell"""
 
 import argparse
 import os
@@ -21,6 +21,7 @@ from utilities import *
 
 logger = structlog.get_logger()
 os.system("clear")
+
 
 def main(args):
     logger.info("Initiating Autobot")
